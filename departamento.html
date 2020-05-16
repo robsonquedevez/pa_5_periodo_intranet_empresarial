@@ -284,31 +284,80 @@
         </nav>
         <!-- End of Topbar -->
 
-        <!-- Begin Page Content -->
-        <div class="container-fluid">
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
 
-          <!-- Page Heading -->
 
-            <!-- Card Area de Arquivos -->
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Arquvios Departamento</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                  <div class="card mb-4">
+                    <div class="card-header">
+                      Cadastro de Departamento
                     </div>
-                    <div class="col-auto">
-                      <i class="fas fa-folder-open fa-2x text-gray-300"></i>
+                    <div class="card-body">
+                      
+                      <!-- Inicio Form Cadastro de Deparmento -->
+                      <form action="" method="post">
+      
+                        <div class="form-row">
+                          <div class="col-md-4 mb-3">
+                            <label>Departamento</label>
+                            <input type="text" class="form-control" id="idDepartamento" placeholder="Departamento" name="departamento" required>
+                          </div>
+                          <div class="col-md-4 mb-3">
+                            <label>Gestor:</label>
+                            <select class="custom-select" name="gestor" id="idGestor">
+                              <option value="">Diego Broetto</option>
+                              <option value="">Diego Broetto</option>
+                              <option value="">Diego Broetto</option>
+                            </select>
+                          </div>
+                          <div class="col-md-4 mb-3">
+                            <label>Gravar: </label>
+                            <div class="input-group">
+                              <button type="button" class="btn btn-primary" id="idSalvarDpt">Salvar Departamento</button>
+                            </div>
+                          </div>
+                        </div>
+                    
+                      </form> 
+                      <!-- Fim Form Cadastro de Deparmento -->
+      
+                      <!-- Inicio Tabela Departamento -->
+                      <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Departamento</th>
+                              <th>Gestor</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>1</td>
+                              <td>Marketing</td>
+                              <td>Diego Broetto</td>
+                              <td><button class="btn far fa-trash-alt center"></button></td>
+                            </tr>
+                            <tr>
+                              <td>2</td>
+                              <td>Tecnologia da Informação</td>
+                              <td>Robson</td>
+                              <td><button class="btn far fa-trash-alt center"></button></td>
+                            </tr>
+                        </table>
+                      </div>
+      
+      
+                        
                     </div>
                   </div>
-                </div>
+      
+      
+                
+      
               </div>
-            </div>         
-
-
-        </div>
-        <!-- /.container-fluid -->
+              <!-- /.container-fluid -->
 
       </div>
       <!-- End of Main Content -->
