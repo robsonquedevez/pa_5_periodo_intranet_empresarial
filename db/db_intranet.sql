@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.1
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 13-Maio-2020 às 02:21
--- Versão do servidor: 10.4.8-MariaDB
--- versão do PHP: 7.3.10
+-- Tempo de geração: 26-Maio-2020 às 01:59
+-- Versão do servidor: 10.4.11-MariaDB
+-- versão do PHP: 7.4.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -21,6 +20,32 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `db_intranet`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `tb_anexo`
+--
+
+CREATE TABLE `tb_anexo` (
+  `id` int(11) NOT NULL,
+  `id_documento` int(11) NOT NULL,
+  `caminho` varchar(256) COLLATE utf8_bin NOT NULL,
+  `data` datetime NOT NULL,
+  `nome` varchar(256) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `tb_categorias`
+--
+
+CREATE TABLE `tb_categorias` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(256) COLLATE utf8_bin NOT NULL,
+  `departamento` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -52,16 +77,39 @@ CREATE TABLE `tb_documentos` (
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `tb_noticias`
+-- Estrutura da tabela `tb_log_documento`
 --
 
-CREATE TABLE `tb_noticias` (
+CREATE TABLE `tb_log_documento` (
   `id` int(11) NOT NULL,
-  `titulo` varchar(45) COLLATE utf8_bin DEFAULT NULL,
-  `fonte` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `data` datetime DEFAULT NULL,
-  `conteudo` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
-  `imagem` longblob DEFAULT NULL
+  `id_documento` int(11) NOT NULL,
+  `descricao` int(11) NOT NULL,
+  `usuario` int(11) NOT NULL,
+  `departamento` int(11) NOT NULL,
+  `ip` varchar(30) COLLATE utf8_bin NOT NULL,
+  `host` varchar(30) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `tb_permissao`
+--
+
+CREATE TABLE `tb_permissao` (
+  `id` int(11) NOT NULL,
+  `cad_usu_insert` tinyint(1) NOT NULL DEFAULT 0,
+  `cad_usu_update` tinyint(1) DEFAULT 0,
+  `cad_usu_delete` tinyint(1) NOT NULL DEFAULT 0,
+  `cad_dep_insert` tinyint(1) NOT NULL DEFAULT 0,
+  `cad_dep_update` tinyint(1) NOT NULL DEFAULT 0,
+  `cad_dep_delete` tinyint(1) NOT NULL DEFAULT 0,
+  `cad_cat_insert` tinyint(1) NOT NULL DEFAULT 0,
+  `cad_cat_update` tinyint(1) NOT NULL DEFAULT 0,
+  `cad_cat_delete` tinyint(1) NOT NULL DEFAULT 0,
+  `cad_doc_insert` tinyint(1) NOT NULL DEFAULT 0,
+  `cad_doc_update` tinyint(1) NOT NULL DEFAULT 0,
+  `cad_doc_delete` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -84,6 +132,18 @@ CREATE TABLE `tb_usuario` (
 --
 
 --
+-- Índices para tabela `tb_anexo`
+--
+ALTER TABLE `tb_anexo`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices para tabela `tb_categorias`
+--
+ALTER TABLE `tb_categorias`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Índices para tabela `tb_departamento`
 --
 ALTER TABLE `tb_departamento`
@@ -94,12 +154,6 @@ ALTER TABLE `tb_departamento`
 -- Índices para tabela `tb_documentos`
 --
 ALTER TABLE `tb_documentos`
-  ADD PRIMARY KEY (`id`);
-
---
--- Índices para tabela `tb_noticias`
---
-ALTER TABLE `tb_noticias`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -115,6 +169,18 @@ ALTER TABLE `tb_usuario`
 --
 
 --
+-- AUTO_INCREMENT de tabela `tb_anexo`
+--
+ALTER TABLE `tb_anexo`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `tb_categorias`
+--
+ALTER TABLE `tb_categorias`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de tabela `tb_departamento`
 --
 ALTER TABLE `tb_departamento`
@@ -125,12 +191,6 @@ ALTER TABLE `tb_departamento`
 --
 ALTER TABLE `tb_documentos`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `tb_noticias`
---
-ALTER TABLE `tb_noticias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `tb_usuario`
