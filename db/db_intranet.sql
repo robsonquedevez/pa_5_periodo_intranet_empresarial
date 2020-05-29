@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 26-Maio-2020 às 01:59
+-- Tempo de geração: 29-Maio-2020 às 02:35
 -- Versão do servidor: 10.4.11-MariaDB
--- versão do PHP: 7.4.5
+-- versão do PHP: 7.4.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -58,6 +58,16 @@ CREATE TABLE `tb_departamento` (
   `nome` varchar(45) COLLATE utf8_bin DEFAULT NULL,
   `gestor` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Extraindo dados da tabela `tb_departamento`
+--
+
+INSERT INTO `tb_departamento` (`id`, `nome`, `gestor`) VALUES
+(7, 'Faturamento', NULL),
+(16, 'Contas a Pagar', 14),
+(19, 'Marketing', 15),
+(20, 'Contabilidade', 8);
 
 -- --------------------------------------------------------
 
@@ -115,17 +125,25 @@ CREATE TABLE `tb_permissao` (
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `tb_usuario`
+-- Estrutura da tabela `tb_usuarios`
 --
 
-CREATE TABLE `tb_usuario` (
+CREATE TABLE `tb_usuarios` (
   `id` int(11) NOT NULL,
   `nome` varchar(45) COLLATE utf8_bin NOT NULL,
   `usuario` varchar(45) COLLATE utf8_bin NOT NULL,
   `senha` varchar(200) COLLATE utf8_bin NOT NULL,
   `departamento` int(11) DEFAULT NULL,
-  `gestor` int(11) DEFAULT NULL
+  `gestor` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Extraindo dados da tabela `tb_usuarios`
+--
+
+INSERT INTO `tb_usuarios` (`id`, `nome`, `usuario`, `senha`, `departamento`, `gestor`) VALUES
+(8, 'Diego', 'diego', '$2y$10$HIe92bOlO.sHkCpAioiy0.bFOX.Uwi4sGL8cTg/vlssoHjpt47TiK', 2, 1),
+(15, 'Robson Quedevez', 'robson', '$2y$10$3Q6ZzbQO4BvpOY9TB4oWoe1lkm3alMc6i7CipmccMo7c7i1huVV8W', 7, 1);
 
 --
 -- Índices para tabelas despejadas
@@ -157,12 +175,10 @@ ALTER TABLE `tb_documentos`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices para tabela `tb_usuario`
+-- Índices para tabela `tb_usuarios`
 --
-ALTER TABLE `tb_usuario`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `departamento` (`departamento`),
-  ADD KEY `gestor` (`gestor`);
+ALTER TABLE `tb_usuarios`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT de tabelas despejadas
@@ -184,7 +200,7 @@ ALTER TABLE `tb_categorias`
 -- AUTO_INCREMENT de tabela `tb_departamento`
 --
 ALTER TABLE `tb_departamento`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de tabela `tb_documentos`
@@ -193,27 +209,10 @@ ALTER TABLE `tb_documentos`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de tabela `tb_usuario`
+-- AUTO_INCREMENT de tabela `tb_usuarios`
 --
-ALTER TABLE `tb_usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- Restrições para despejos de tabelas
---
-
---
--- Limitadores para a tabela `tb_departamento`
---
-ALTER TABLE `tb_departamento`
-  ADD CONSTRAINT `tb_departamento_ibfk_1` FOREIGN KEY (`gestor`) REFERENCES `tb_usuario` (`id`);
-
---
--- Limitadores para a tabela `tb_usuario`
---
-ALTER TABLE `tb_usuario`
-  ADD CONSTRAINT `tb_usuario_ibfk_1` FOREIGN KEY (`departamento`) REFERENCES `tb_departamento` (`id`),
-  ADD CONSTRAINT `tb_usuario_ibfk_2` FOREIGN KEY (`gestor`) REFERENCES `tb_usuario` (`id`);
+ALTER TABLE `tb_usuarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

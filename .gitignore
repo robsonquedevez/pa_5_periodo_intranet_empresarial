@@ -1,1 +1,12 @@
 node_modules
+views/vendor/bootstrap
+views/vendor/chart.js
+views/vendor/composer
+views/vendor/datatables
+views/vendor/fontawesome-free
+views/vendor/jquery
+views/vendor/jquery-easing
+views/vendor/rain
+views/vendor/slim
+
+
