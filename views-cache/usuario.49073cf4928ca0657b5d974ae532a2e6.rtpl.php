@@ -110,7 +110,11 @@
                                 <td><?php echo htmlspecialchars( $value1["usuario"], ENT_COMPAT, 'UTF-8', FALSE ); ?></td>
                                 <td><?php echo htmlspecialchars( $value1["departamento"], ENT_COMPAT, 'UTF-8', FALSE ); ?></td>
                                 <td><?php echo formatManagerRequest($value1["gestor"]); ?></td>
-                                <td><button class="btn far fa-trash-alt center btnDeleteUser"></button></td>
+                                <td>
+                                  <button class="btn far fa-trash-alt center btnDeleteUser"></button>
+                                  <button class="btn far fa-edit center btnUpdateUser"></button>
+                                   <button class="btn far fa-key center btnUpdateUser"></button>
+                                </td>
                               </tr>
 
                             <?php } ?>
@@ -133,6 +137,20 @@
               </div>
               <div class="modal-footer">
                   <button data-dismiss="modal" class="btn btn-primary">Fechar</button>
+              </div>             
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="modalUpdateUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body"> 
+                <span id="text-response"></span>
+              </div>
+              <div class="modal-footer">
+                  <button data-dismiss="modal" class="btn btn-danger">Cancelar</button>
+                  <button data-dismiss="modal" class="btn btn-success">Salvar</button>
               </div>             
             </div>
           </div>

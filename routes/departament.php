@@ -36,56 +36,61 @@
 			}			
 	});
 
-	$app->put('/departament/update', function() use ($app){
+	$app->post('/departament/update', function() use ($app){
 		sleep(1);
 
-		if(!isset($_POST['departamento']) || empty($_POST['departamento'])){
+		if (!isset($_POST['departamento']) || empty($_POST['departamento'])) {
 			return $app->response->write(json_encode([
 				'status' 	=> false,
-				'message'	=> 'Nome do departamento deve ser informado'
+				'message'	=> 'Nome do departamento não informado'
 			]));
 		}
 
 		$sql = new Sql();
 		$connection = $sql->getConnection();
-		$statement = $connection->prepare("SELECT nome FROM tb_departamento WHERE nome = :NOME");
-		$statement->bindParam(':NOME', $_POST['departamento']);	
-		$statement->execute();
-
-		if (!empty($statement->fetchAll())) {
-			return $app->response->write(json_encode([
-				'status' 	=> false,
-				'message'	=> 'Nome de departamento já existe'
-			]));
-		}
-
-		$gestor = ($_POST['gestor'] != "0") ? $_POST['gestor'] : null;
 
 		try {
+			if ($_POST['gestor'] == '-1') {
+				$statement = $connection->prepare("UPDATE tb_departamento SET nome = :DEPT WHERE id = :ID");
+				$statement->bindParam(':DEPT', $_POST['departamento']);
+				$statement->bindParam(':ID', $_POST['idDepartamento']);
+				$statement->execute();
+			}
+			elseif ($_POST['gestor'] == '0') {
+				$statement = $connection->prepare("UPDATE tb_departamento SET nome = :DEPT, gestor = NULL WHERE id = :ID");
+				$statement->bindParam(':DEPT', $_POST['departamento']);
+				$statement->bindParam(':ID', $_POST['idDepartamento']);
+				$statement->execute();
+			}
+			else{
+				$statement = $connection->prepare("UPDATE tb_departamento SET nome = :DEPT, gestor = :GST WHERE id = :ID");
+				$statement->bindParam(':DEPT', $_POST['departamento']);
+				$statement->bindParam(':GST', $_POST['gestor']);
+				$statement->bindParam(':ID', $_POST['idDepartamento']);
+				$statement->execute();
+			}
 
-			$statement = $connection->prepare('INSERT INTO tb_departamento (nome, gestor) VALUES (:NOME, :GESTOR)');
-			$statement->bindParam(':NOME', $_POST['departamento']);			
-			$statement->bindParam(':GESTOR', $gestor);
-			$statement->execute();
+			$id_dept = $_POST['idDepartamento'];
 
-			$queryUser = $connection->query("SELECT nome FROM tb_usuarios WHERE id = $gestor LIMIT 1");
+			$queryDept = $connection->query("SELECT dept.id, dept.nome,gest.nome as gnome FROM tb_departamento AS dept LEFT JOIN tb_usuarios AS gest ON dept.gestor = gest.id WHERE dept.id = $id_dept");
 
-			$user = $queryUser->fetchAll()[0];
+			$dept = $queryDept->fetchAll()[0];
 
 			return $app->response->write(json_encode([
 				'status'	=> true,
 				'message'	=> [
-					'departamento' 	=> $_POST['departamento'],
-					'gestor'		=> $user['nome'],
-					'id'			=> $connection->lastInsertId()
+					'departamento' 	=> $dept['nome'],
+					'gestor'		=> $dept['gnome'],
+					'id'			=> $dept['id']
 				]
 			]));
+
 		} catch (Exception $e) {
 			return $app->response->write(json_encode([
 				'status' 	=> false,
 				'message'	=> $e->getMessage()
 			]));
-		}			
+		}
 	});
 
 	$app->post('/departament/insert', function() use ($app){
@@ -118,17 +123,19 @@
 			$statement = $connection->prepare('INSERT INTO tb_departamento (nome, gestor) VALUES (:NOME, :GESTOR)');
 			$statement->bindParam(':NOME', $_POST['departamento']);			
 			$statement->bindParam(':GESTOR', $gestor);
-			$statement->execute();
+			$statement->execute();			
 
-			$queryUser = $connection->query("SELECT nome FROM tb_usuarios WHERE id = $gestor LIMIT 1");
-
-			$user = $queryUser->fetchAll()[0];
-
+			if($gestor != null){
+				$queryUser = $connection->query("SELECT nome FROM tb_usuarios WHERE id = $gestor LIMIT 1");
+				$user = $queryUser->fetchAll()[0]['nome'];
+			}else{
+				$user = "";
+			}
 			return $app->response->write(json_encode([
 				'status'	=> true,
 				'message'	=> [
 					'departamento' 	=> $_POST['departamento'],
-					'gestor'		=> $user['nome'],
+					'gestor'		=> $user,
 					'id'			=> $connection->lastInsertId()
 				]
 			]));
