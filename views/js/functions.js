@@ -5,6 +5,7 @@ $(document).ready(() => {
 	/* --------------     Derpartament        ------------------ */
 
 	const frmRegDepartament = $('#frm-register-departament');
+	const frmRegDepartamentUp = $('#frm-register-departament-update');
 
 	function deleteDepartament(ev){
 		let id = ev.target.parentElement.parentElement.dataset.id;
@@ -37,19 +38,46 @@ $(document).ready(() => {
 		let departamento = ev.target.parentElement.parentElement.cells[0].textContent;
 		let gestor = ev.target.parentElement.parentElement.cells[1].textContent;
 
-		console.log(departamento, gestor, id);
+		$('#index').val(id);
 
-		/*$.ajax({
-			url: '/register/departament/update/',
-			method: 'delete',
+		$('#idDepartamentoUp').val(departamento);
+
+		$('#idGestorUp option:eq(0)').text(gestor);	
+		
+		$('#modalUpdateDepartament').modal('show');
+
+	}
+
+	frmRegDepartamentUp.submit((ev) => {
+		ev.preventDefault();
+
+		let data = frmRegDepartamentUp.serialize();
+
+		$.ajax({
+			url: '/register/departament/update',
+			method: 'post',
+			data: data,
 			dataType: 'json',
-			beforeSend: function(response){
+			beforeSend: function(response){	
+				$('#modalUpdateDepartament').modal('hide');			
 				mdLoading.modal('show');
 			},
 			success: function(response){
-				console.log(response);
 
-				row.remove();
+				if(response.status){
+
+					$('#table-departament > tbody > tr').each(function (index) {
+						
+						if($(this)[0].dataset.id == response.message.id){							
+							$(this)[0].children[0].textContent = response.message.departamento;
+							$(this)[0].children[1].textContent = response.message.gestor;
+						}
+					});								
+
+				}else{
+					$('#text-response').html(response.message);
+					$('#response').modal('show');
+				}					
 
 				mdLoading.modal('hide');
 			},
@@ -57,8 +85,8 @@ $(document).ready(() => {
 				console.log(response);
 				mdLoading.modal('hide');
 			}
-		});*/
-	}
+		});
+	});
 
 	frmRegDepartament.submit((ev) => {
 		ev.preventDefault();
@@ -73,8 +101,6 @@ $(document).ready(() => {
 				mdLoading.modal('show');
 			},
 			success: function(response){
-				console.log(response);
-
 				if(response.status){
 					let table = $('#table-departament tbody');
 
@@ -89,14 +115,14 @@ $(document).ready(() => {
 	                    </tr>
 					`;
 
-					table.append(newRow).on('click', '.btnDelDepartament', (ev) => {deleteDepartament(ev)});
+					table.append(newRow).on('click', '.btnDelDepartament', (ev) => {deleteDepartament(ev)}).on('click', '.btnUpDepartament', (ev) => {updateDepartament(ev)});
 				}else{
 					$('#text-response').html(response.message);
 					$('#response').modal('show');				
 				}
 
-				$('#idDepartamento').val("").focus();
-				$('#idGestor').prop('selectedIndex',0);
+				frmRegDepartament[0].reset();
+				$('#idDepartamento').focus();
 
 				mdLoading.modal('hide');				
 			},
@@ -112,7 +138,7 @@ $(document).ready(() => {
 	});
 
 	$('.btnUpDepartament').click((ev) => {
-		updateDepartament(ev)
+		updateDepartament(ev);
 	});
 
 	/* --------------     User      ------------------ */
@@ -144,7 +170,6 @@ $(document).ready(() => {
 		});
 	}
 
-
 	frmRegUser.submit((ev) => {
 		ev.preventDefault();
 		let data = frmRegUser.serialize();
@@ -171,11 +196,18 @@ $(document).ready(() => {
 		                    <td>${response.message.usuario}</td>
 		                    <td>${response.message.departamento}</td>
 		                    <td>${response.message.gestor}</td>
-		                    <td><button class="btn far fa-trash-alt center btnDeleteUser"></button></td>
+		                    <td>
+		                    	<button class="btn far fa-trash-alt center btnDeleteUser"></button>
+		                    	<button class="btn far fa-edit center btnUpdateUser"></button>
+		                    </td>
 	                  	</tr>
 					`;
 					
 					table.append(newRow).on('click', '.btnDeleteUser', (ev) => {deleteUser(ev)});
+
+					frmRegUser[0].reset();
+					$('#idNome').focus();
+
 				}else{
 					$('#text-response').html(response.message);
 					$('#response').modal('show');

@@ -8,5 +8,6 @@ views/vendor/jquery
 views/vendor/jquery-easing
 views/vendor/rain
 views/vendor/slim
+/views-cache
 
 

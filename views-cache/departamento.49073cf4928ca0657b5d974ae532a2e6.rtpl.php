@@ -87,3 +87,33 @@
             </div>
           </div>
         </div>
+
+        <div class="modal fade" id="modalUpdateDepartament" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <form id="frm-register-departament-update">
+                <div class="modal-body"> 
+                  <div class="form-group form-row">
+                    <input type="hidden" name="idDepartamento" id="index" value="">
+                    <label>Departamento</label>
+                    <input type="text" name="departamento" class="form-control" id="idDepartamentoUp">
+                    <label>Gestor</label>
+                    <select name="gestor" class="custom-select" id="idGestorUp"> 
+                      <option value="-1"></option>
+                      <option value="0">Nenhum</option>
+                      <?php $counter1=-1;  if( isset($managers) && ( is_array($managers) || $managers instanceof Traversable ) && sizeof($managers) ) foreach( $managers as $key1 => $value1 ){ $counter1++; ?>
+
+                        <option value="<?php echo htmlspecialchars( $value1["id"], ENT_COMPAT, 'UTF-8', FALSE ); ?>"><?php echo htmlspecialchars( $value1["nome"], ENT_COMPAT, 'UTF-8', FALSE ); ?></option>
+
+                      <?php } ?>
+                    </select>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-danger">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+              </form>             
+            </div>
+          </div>
+        </div>
