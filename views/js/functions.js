@@ -42,10 +42,10 @@ $(document).ready(() => {
 
 		$('#idDepartamentoUp').val(departamento);
 
-		$('#idGestorUp option:eq(0)').text(gestor);	
+		$('#idGestorUp option:eq(0)').text(gestor);
+
 		
 		$('#modalUpdateDepartament').modal('show');
-
 	}
 
 	frmRegDepartamentUp.submit((ev) => {
@@ -144,6 +144,7 @@ $(document).ready(() => {
 	/* --------------     User      ------------------ */
 
 	const frmRegUser = $('#frm-register-user');
+	const frmRegUserUp = $('#frm-register-user-update');
 
 	function deleteUser(ev){
 		let id = ev.target.parentElement.parentElement.dataset.id;
@@ -168,6 +169,30 @@ $(document).ready(() => {
 				mdLoading.modal('hide');
 			}
 		});
+	}
+
+	function updateUser(ev){
+
+		let id = ev.target.parentElement.parentElement.dataset.id;
+		let nome = ev.target.parentElement.parentElement.cells[0].textContent;
+		let usuario = ev.target.parentElement.parentElement.cells[1].textContent;
+		let departamento = ev.target.parentElement.parentElement.cells[2].textContent;
+		let gestor = ev.target.parentElement.parentElement.cells[3].textContent;
+
+		console.log(id);
+
+		$('#idUserUp').val(id);
+		$('#idNomeUp').val(nome);
+		$('#idUsuarioUp').val(usuario);
+		$('#idDepartamentoUp option:eq(0)').text(departamento);
+
+		if(gestor == "Sim"){
+			$('#idGestorUp option:eq(0)').prop('selected', true);
+		}else{
+			$('#idGestorUp option:eq(1)').prop('selected', true);
+		}
+
+		$('#modalUpdateUser').modal('show');
 	}
 
 	frmRegUser.submit((ev) => {
@@ -203,7 +228,7 @@ $(document).ready(() => {
 	                  	</tr>
 					`;
 					
-					table.append(newRow).on('click', '.btnDeleteUser', (ev) => {deleteUser(ev)});
+					table.append(newRow).on('click', '.btnDeleteUser', (ev) => {deleteUser(ev)}).on('click', '.btnUpdateUser', (ev) => {updateUser(ev)});
 
 					frmRegUser[0].reset();
 					$('#idNome').focus();
@@ -222,8 +247,51 @@ $(document).ready(() => {
 		});
 	});
 
+	frmRegUserUp.submit((ev) => {
+		ev.preventDefault();
+		let data = frmRegUserUp.serialize();
+
+		$.ajax({
+			url: '/register/user/update',
+			method: 'post',
+			data: data,
+			dataType: 'json',
+			beforeSend: function(response){
+				$('#modalUpdateUser').modal('hide');
+				mdLoading.modal('show');
+			},
+			success: function(response){
+				console.log(response);
+
+				if (response.status) {
+					$('#table-user > tbody > tr ').each(function (index) {						
+						if($(this)[0].dataset.id == response.message.id){							
+							$(this)[0].children[0].textContent = response.message.nome;
+							$(this)[0].children[1].textContent = response.message.usuario;
+							$(this)[0].children[2].textContent = response.message.departamento;
+							$(this)[0].children[3].textContent = response.message.gestor;
+						}
+					});
+				}else{
+					$('#text-response').html(response.message);
+					$('#response').modal('show');
+				}
+				
+				mdLoading.modal('hide');
+			},
+			error: function(response){
+				console.log(response);
+				mdLoading.modal('hide');
+			}
+		});
+	});
+
 	$('.btnDeleteUser').click((ev) => {
 		deleteUser(ev);
+	});
+
+	$('.btnUpdateUser').click((ev) => {
+		updateUser(ev);
 	});
 
 });

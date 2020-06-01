@@ -1,3 +1,9 @@
 /views-cache
+/views/vendor/bootstrap
+/views/vendor/chart.js
+/views/vendor/datatables
+/views/vendor/fontwesome-free
+/views/vendor/jquery
+/views/vendor/jquery-easing
 
 

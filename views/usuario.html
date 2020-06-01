@@ -113,7 +113,6 @@
                                 <td>
                                   <button class="btn far fa-trash-alt center btnDeleteUser"></button>
                                   <button class="btn far fa-edit center btnUpdateUser"></button>
-                                   <button class="btn far fa-key center btnUpdateUser"></button>
                                 </td>
                               </tr>
 
@@ -145,13 +144,55 @@
         <div class="modal fade" id="modalUpdateUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
-              <div class="modal-body"> 
-                <span id="text-response"></span>
-              </div>
-              <div class="modal-footer">
-                  <button data-dismiss="modal" class="btn btn-danger">Cancelar</button>
-                  <button data-dismiss="modal" class="btn btn-success">Salvar</button>
-              </div>             
+               <form id="frm-register-user-update">
+                  <div class="modal-body"> 
+                
+                    <input type="hidden" name="id" id="idUserUp">
+                    
+                      <div class="form-group">
+
+                          <label>Nome</label>
+                          <input type="text" name="nome" id="idNomeUp" class="form-control">
+                      
+                          <label>Usuário</label>
+                          <input type="text" name="nome" id="idUsuarioUp" class="form-control" disabled="">                      
+
+                          <label>Departamento</label>
+                          <select class="custom-select" name="departamento" id="idDepartamentoUp" class="custom-select">
+                              <option value="-1"></option>
+                              <option value="0">Nenhum</option>
+                              {loop="$departaments"}
+
+                              <option value="{$value.id}">{$value.nome}</option>
+
+                              {/loop}
+
+                            </select>
+                     
+                          <label>Gestor</label>
+                          <select class="custom-select" name="gestor" id="idGestorUp" class="custom-select">
+                            <option value="1">Sim</option>
+                            <option value="0">Não</option>
+                          </select>
+
+                          <div class="form-row mt-3">
+
+                            <div class="col">
+                              <input type="password" name="senha" class="form-control" placeholder="Nova senha">
+                            </div>
+                            <div class="col">
+                              <input type="password" name="confirmaSenha" class="form-control" placeholder="Confirma nova senha">
+                            </div>                         
+                            
+                          </div>
+
+                      </div>
+                    </div> 
+                  <div class="modal-footer">
+                      <button type="button" data-dismiss="modal" class="btn btn-danger">Cancelar</button>
+                      <button type="submit" class="btn btn-success">Salvar</button>
+                  </div>
+                </form>            
             </div>
           </div>
         </div>

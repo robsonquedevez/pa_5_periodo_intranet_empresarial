@@ -36,6 +36,102 @@
 			}
 	});
 
+	$app->post('/user/update', function() use ($app){
+		sleep(1);
+
+		if (!isset($_POST['nome']) || empty($_POST['nome'])) {
+			return $app->response->write(json_encode([
+				'status' 	=> false,
+				'message'	=> 'Nome deve ser preenchido'
+			]));
+		}
+
+		$sql = new Sql();
+		$connection = $sql->getConnection();
+
+		if (isset($_POST['senha']) && !empty($_POST['senha'])) {
+			
+			if (!isset($_POST['confirmaSenha']) || empty($_POST['confirmaSenha'])) {
+				return $app->response->write(json_encode([
+					'status' 	=> false,
+					'message'	=> 'Cofirmação da senha deve ser preenchido'
+				]));
+			}
+
+			if ($_POST['senha'] != $_POST['confirmaSenha']) {
+				return $app->response->write(json_encode([
+					'status' 	=> false,
+					'message'	=> 'Senhas informadas são diferentes'
+				]));
+			}
+
+			$pass = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+
+			try {
+				
+				$statement = $connection->prepare('UPDATE tb_usuarios SET senha = :PASS WHERE id = :ID');
+				$statement->bindParam(':PASS', $pass);
+				$statement->bindParam(':ID', $_POST['id']);
+				$statement->execute();
+
+			} catch (Exception $e) {
+				return $app->response->write(json_encode([
+					'status' 	=> false,
+					'message'	=> $e->getMessage()
+				]));
+			}
+		}
+
+		$id = $_POST['id'];
+
+		try {
+			if($_POST['departamento'] == '-1'){
+				$statement = $connection->prepare('UPDATE tb_usuarios SET nome = :NOME, gestor = :GST WHERE id = :ID');
+				$statement->bindParam(':NOME', $_POST['nome']);
+				$statement->bindParam(':GST', $_POST['gestor']);
+				$statement->bindParam(':ID', $id);
+				$statement->execute();
+			}
+			elseif ($_POST['departamento'] == '0') {
+				$statement = $connection->prepare('UPDATE tb_usuarios SET nome = :NOME, departamento = NULL, gestor = :GST WHERE id = :ID');
+				$statement->bindParam(':NOME', $_POST['nome']);
+				$statement->bindParam(':GST', $_POST['gestor']);
+				$statement->bindParam(':ID', $id);
+				$statement->execute();
+			}
+			else{
+				$statement = $connection->prepare('UPDATE tb_usuarios SET nome = :NOME, departamento = :DEPT, gestor = :GST WHERE id = :ID');
+				$statement->bindParam(':NOME', $_POST['nome']);
+				$statement->bindParam(':GST', $_POST['gestor']);
+				$statement->bindParam(':DEPT', $_POST['departamento']);
+				$statement->bindParam(':ID', $id);
+				$statement->execute();
+			}
+
+
+
+			$queryUser = $connection->query("SELECT user.id, user.nome, user.usuario, dept.nome AS departamento, user.gestor FROM tb_usuarios AS user LEFT JOIN tb_departamento AS dept ON user.departamento = dept.id WHERE user.id = $id");
+
+			$user = $queryUser->fetchAll()[0];
+
+			return $app->response->write(json_encode([
+				'status'	=> true,
+				'message'	=> [					
+					'nome'			=> $user['nome'],
+					'usuario'		=> $user['usuario'],
+					'departamento' 	=> $user['departamento'],
+					'gestor'		=> ($user['gestor'] == 0) ? "Não" : "Sim",
+					'id'			=> $user['id']
+				]
+			]));
+		} catch (Exception $e) {
+			return $app->response->write(json_encode([
+					'status' 	=> false,
+					'message'	=> $e->getMessage()
+				]));
+		}
+	});
+
 	$app->post('/user/insert', function() use ($app){
 		sleep(1);
 
