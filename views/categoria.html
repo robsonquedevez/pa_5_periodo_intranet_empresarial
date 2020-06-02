@@ -85,3 +85,34 @@
                 </div>
               </div>
             </div>
+
+             <div class="modal fade" id="modalUpdateCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <form id="frm-register-category-update">
+                    <div class="modal-body"> 
+                      <div class="form-group form-row">
+                        <input type="hidden" name="idCategoryDbUp" id="idCategoryDbUp" value="">
+                        <label>Categoria</label>
+                        <input type="text" name="categoria" class="form-control" id="idCategoryUp">
+                        <label>Departamento</label>
+                        <select class="custom-select" name="departamento" id="idDepartamentoUp">
+                              <option value="0"></option>
+
+                              {loop="$departament"}
+
+                                <option value="{$value.id}">{$value.nome}</option>
+
+                              {/loop}
+
+                            </select>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn btn-danger">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                    </div>
+                  </form>             
+                </div>
+              </div>
+            </div>

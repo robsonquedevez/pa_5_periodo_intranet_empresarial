@@ -5,6 +5,87 @@
 	use App\PageAdmin;	
 	use App\Sql;
 
+	$app->delete('/category/delete/:id', function($id) use ($app){
+		sleep(1);
+
+		if(!isset($id)){
+				return $app->response->write(json_encode([
+					'status' 	=> false,
+					'message'	=> 'Nenhuma categoria foi selecionado'
+				]));
+			}
+
+			$sql = new Sql();
+			$connection = $sql->getConnection();
+
+			try {
+
+				$statement = $connection->prepare('DELETE FROM tb_categorias WHERE id = :ID');
+				$statement->bindParam(':ID', $id);
+				$statement->execute();
+
+				return $app->response->write(json_encode([
+					'status'	=> true,
+					'message'	=> 'Item excluido'
+				]));
+			} catch (Exception $e) {
+				return $app->response->write(json_encode([
+					'status' 	=> false,
+					'message'	=> $e->getMessage()
+				]));
+			}	
+	});
+
+	$app->post('/category/update',  function() use ($app){
+		sleep(1);
+
+		if (!isset($_POST['categoria']) || empty($_POST['categoria']) || !isset($_POST['departamento'])) {
+			return $app->response->write(json_encode([
+				'status' 	=> false,
+				'message'	=> 'Todos os campos devem ser preenchidos'
+			]));
+		}
+
+		$sql = new Sql();
+		$connection = $sql->getConnection();
+
+		try {
+			if ($_POST['departamento'] == '0') {
+				$statement = $connection->prepare("UPDATE tb_categorias SET nome = :CAT WHERE id = :ID");
+				$statement->bindParam(':CAT', $_POST['categoria']);
+				$statement->bindParam(':ID', $_POST['idCategoryDbUp']);
+				$statement->execute();
+			}
+			else{
+				$statement = $connection->prepare("UPDATE tb_categorias SET nome = :CAT, departamento = :DEPT WHERE id = :ID");
+				$statement->bindParam(':CAT', $_POST['categoria']);
+				$statement->bindParam(':DEPT', $_POST['departamento']);
+				$statement->bindParam(':ID', $_POST['idCategoryDbUp']);
+				$statement->execute();
+			}
+
+			$id_cat = $_POST['idCategoryDbUp'];
+
+			$queryCat = $connection->query("SELECT cat.id, cat.nome, dept.nome AS departamento FROM tb_categorias AS cat LEFT JOIN tb_departamento AS dept ON cat.departamento = dept.id WHERE cat.id = $id_cat");
+
+			$categoria = $queryCat->fetchAll()[0];
+
+			return $app->response->write(json_encode([
+				'status'	=> true,
+				'message'	=> [
+					'categoria' 	=> $categoria['nome'],
+					'departamento'		=> $categoria['departamento'],
+					'id'			=> $categoria['id']
+				]
+			]));
+
+		} catch (Exception $e) {
+			return $app->response->write(json_encode([
+				'status' 	=> false,
+				'message'	=> $e->getMessage()
+			]));
+		}
+	});
 
 	$app->post('/category/insert', function() use ($app){
 		sleep(1);
@@ -63,7 +144,6 @@
 			]));
 		}
 	});
-
 
 	$app->get('/category', function(){
 		$pgAdmin = new PageAdmin(array(

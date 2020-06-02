@@ -299,6 +299,45 @@ $(document).ready(() => {
 	/* --------------     User      ------------------ */
 
 	const frmRegCategory = $('#frm-register-category');
+	const frmRegCategoryUp = $('#frm-register-category-update');
+
+	function deleteCategory(ev){
+		let id = ev.target.parentElement.parentElement.dataset.id;
+		let row = ev.target.parentElement.parentElement;
+
+		$.ajax({
+			url: '/register/category/delete/'+ id,
+			method: 'delete',
+			dataType: 'json',
+			beforeSend: function(response){
+				$('#loading').modal('show');
+			},
+			success: function(response){
+				console.log(response);
+
+				row.remove();
+
+				$('#loading').modal('hide');
+			},
+			error: function(response){
+				console.log(response);
+				$('#loading').modal('hide');
+			}
+		});
+	}
+
+	function updateCategory(ev){
+		let id = ev.target.parentElement.parentElement.dataset.id;
+		let categoria = ev.target.parentElement.parentElement.cells[0].textContent;
+		let departamento = ev.target.parentElement.parentElement.cells[1].textContent;
+
+		$('#idCategoryDbUp').val(id);
+		$('#idCategoryUp').val(categoria);
+		$('#idDepartamentoUp option:eq(0)').text(departamento);
+
+		$('#modalUpdateCategory').modal('show');
+
+	}
 
 	frmRegCategory.submit((ev) => {
 
@@ -349,4 +388,52 @@ $(document).ready(() => {
 				$('#loading').modal('hide');
 			}
 		});
+	});
+
+
+	frmRegCategoryUp.submit((ev) => {
+		ev.preventDefault();
+		let data = frmRegCategoryUp.serialize();
+
+		$.ajax({
+			url: '/register/category/update',
+			method: 'post',
+			data: data,
+			dataType: 'json',
+			beforeSend: function(response){
+				$('#modalUpdateCategory').modal('hide');
+				$('#loading').modal('show');
+			},
+			success: function(response){
+				console.log(response);
+
+				if (response.status) {
+					$('#table-category > tbody > tr ').each(function (index) {						
+						if($(this)[0].dataset.id == response.message.id){							
+							$(this)[0].children[0].textContent = response.message.categoria;
+							$(this)[0].children[1].textContent = response.message.departamento;
+						}
+					});
+				}else{
+					$('#text-response').html(response.message);
+					$('#response').modal('show');
+				}
+				
+				$('#loading').modal('hide');
+			},
+			error: function(response){
+				console.log(response);
+				$('#loading').modal('hide');
+			}
+		});
+
+	});
+
+
+	$('.btnDelCategory').click((ev) => {
+		deleteCategory(ev);
+	});
+
+	$('.btnUpCategory').click((ev) =>{
+		updateCategory(ev);
 	});
