@@ -14,15 +14,8 @@
 
 		include(__DIR__.'\routes\user.php');
 
-		$app->get('/category', function(){
-			$page = new PageAdmin(array(
-				'username' 	=> 'Robson Quedevez',
-				'avatar'	=> '/../views/img/avatar/avatar.jpg'
-			));
-
-			$page->setPage('categoria');
-		});
-
+		include(__DIR__.'\routes\category.php');
+		
 		include(__DIR__.'\routes\departament.php');
 	});
 

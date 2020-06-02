@@ -9,7 +9,7 @@
                     <div class="card-body">
                       
                       <!-- Inicio Form Cadastro de Categorias-->
-                      <form action="" method="post">
+                      <form id="frm-register-category">
       
                         <div class="form-row">
                           <div class="col-md-4 mb-3">
@@ -19,15 +19,20 @@
                           <div class="col-md-4 mb-3">
                             <label>Departamento:</label>
                             <select class="custom-select" name="departamento" id="idDepartamento">
-                              <option value="">Recursos Humanos</option>
-                              <option value="">Tecnologia da Informação</option>
-                              <option value="">Marketing</option>
+                              <option value="0">Selecione</option>
+
+                              <?php $counter1=-1;  if( isset($departament) && ( is_array($departament) || $departament instanceof Traversable ) && sizeof($departament) ) foreach( $departament as $key1 => $value1 ){ $counter1++; ?>
+
+                                <option value="<?php echo htmlspecialchars( $value1["id"], ENT_COMPAT, 'UTF-8', FALSE ); ?>"><?php echo htmlspecialchars( $value1["nome"], ENT_COMPAT, 'UTF-8', FALSE ); ?></option>
+
+                              <?php } ?>
+
                             </select>
                           </div>
                           <div class="col-md-4 mb-3">
                             <label>Gravar: </label>
                             <div class="input-group">
-                              <button type="button" class="btn btn-primary" id="idSalvarCat">Incluir Categoria</button>
+                              <button type="submit" class="btn btn-primary" id="idSalvarCat">Incluir Categoria</button>                              
                             </div>
                           </div>
                         </div>
@@ -37,40 +42,46 @@
       
                       <!-- Inicio Tabela Departamento -->
                       <div class="table-responsive">
-                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <table class="table table-bordered" id="table-category" width="100%" cellspacing="0">
                           <thead>
                             <tr>
-                              <th>ID</th>
                               <th>Categoria</th>
                               <th>Departamento</th>
                               <th></th>
                             </tr>
                           </thead>
                           <tbody>
-                            <tr>
-                              <td>1</td>
-                              <td>Rede</td>
-                              <td>Tecnologia da Infomação</td>
-                              <td><button class="btn far fa-trash-alt center"></button></td>
-                            </tr>
-                            <tr>
-                              <td>2</td>
-                              <td>Folha de Pagamento</td>
-                              <td>Recursos Humanos</td>
-                              <td><button class="btn far fa-trash-alt center"></button></td>
-                            </tr>
+
+                            <?php $counter1=-1;  if( isset($category) && ( is_array($category) || $category instanceof Traversable ) && sizeof($category) ) foreach( $category as $key1 => $value1 ){ $counter1++; ?>
+
+                               <tr data-id="<?php echo htmlspecialchars( $value1["id"], ENT_COMPAT, 'UTF-8', FALSE ); ?>">
+                                  <td><?php echo htmlspecialchars( $value1["nome"], ENT_COMPAT, 'UTF-8', FALSE ); ?></td>
+                                  <td><?php echo htmlspecialchars( $value1["departamento"], ENT_COMPAT, 'UTF-8', FALSE ); ?></td>
+                                  <td>
+                                    <button class="btn far fa-trash-alt center btnDelCategory"></button>
+                                    <button class="btn far fa-edit center btnUpCategory"></button>
+                                  </td>
+                                </tr>
+
+                            <?php } ?>
+
                         </table>
                       </div>
-      
-      
-                        
                     </div>
                   </div>
-      
-      
-                
-      
               </div>
-              <!-- /.container-fluid -->
+            </div>
 
-      </div>
+
+            <div class="modal fade" id="response" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-body"> 
+                    <span id="text-response"></span>
+                  </div>
+                  <div class="modal-footer">
+                      <button data-dismiss="modal" class="btn btn-primary">Fechar</button>
+                  </div>             
+                </div>
+              </div>
+            </div>

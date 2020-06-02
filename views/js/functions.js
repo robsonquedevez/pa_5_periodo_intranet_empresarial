@@ -295,3 +295,58 @@ $(document).ready(() => {
 	});
 
 });
+
+	/* --------------     User      ------------------ */
+
+	const frmRegCategory = $('#frm-register-category');
+
+	frmRegCategory.submit((ev) => {
+
+		ev.preventDefault();
+		let data = frmRegCategory.serialize();
+
+		$.ajax({
+			url: '/register/category/insert',
+			method: 'post',
+			data: data,
+			dataType: 'json',
+			beforeSend: function(response){
+				$('#loading').modal('show');
+			},
+			success: function(response){
+				console.log(response);
+				$('#loading').modal('hide');
+
+				if(response.status){
+
+					let table = $('#table-category tbody');
+
+					let newRow = `
+
+						<tr data-id=${response.message.id}>
+		                    <td>${response.message.categoria}</td>
+		                    <td>${response.message.departamento}</td>
+		                    <td>
+		                    	<button class="btn far fa-trash-alt center btnDelCategory"></button>
+		                    	<button class="btn far fa-edit center btnUpCategory"></button>
+		                    </td>
+	                  	</tr>
+					`;
+					
+					table.append(newRow).on('click', '.btnDelCategory', (ev) => {deleteUser(ev)}).on('click', '.btnUpCategory', (ev) => {updateUser(ev)});
+
+					frmRegCategory[0].reset();
+					$('#idNome').focus();
+
+				}else{
+					$('#text-response').html(response.message);
+					$('#response').modal('show');
+				}
+
+			},
+			error : function(response){
+				console.log(response);
+				$('#loading').modal('hide');
+			}
+		});
+	});
