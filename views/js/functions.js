@@ -336,7 +336,6 @@ $(document).ready(() => {
 		$('#idDepartamentoUp option:eq(0)').text(departamento);
 
 		$('#modalUpdateCategory').modal('show');
-
 	}
 
 	frmRegCategory.submit((ev) => {
@@ -390,7 +389,6 @@ $(document).ready(() => {
 		});
 	});
 
-
 	frmRegCategoryUp.submit((ev) => {
 		ev.preventDefault();
 		let data = frmRegCategoryUp.serialize();
@@ -426,9 +424,7 @@ $(document).ready(() => {
 				$('#loading').modal('hide');
 			}
 		});
-
 	});
-
 
 	$('.btnDelCategory').click((ev) => {
 		deleteCategory(ev);
@@ -436,4 +432,57 @@ $(document).ready(() => {
 
 	$('.btnUpCategory').click((ev) =>{
 		updateCategory(ev);
+	});
+
+	/* --------------     File      ------------------ */
+
+
+	$("#idFile").change((ev) => {
+		$('#nameFileInput').text(ev.target.files[0].name);
+	});
+
+	const frmFileInclude = $('#frm-include-file');
+
+	frmFileInclude.submit((ev) => {
+		ev.preventDefault();
+		let data = new FormData();
+
+		if (ev.target[3].checked) {
+			$type = 'Publico'
+		}else{
+			$type = 'Privado'
+		}
+		
+		data.append("nome", ev.target[0].value);
+		data.append("departamento", ev.target[1].value);
+		data.append("categoria", ev.target[2].value);
+		data.append("tipo", $type);
+		data.append("file", ev.target[5].files[0]);
+		
+		$.ajax({
+			url: '/file/include',
+			type: 'post',
+			data: data,
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			beforeSend: function(response){
+				$('#loading').modal('show');
+			},
+			success: function(response){
+				console.log(response);
+
+				if (response.status) {
+					console.log(response);
+				}else{
+					$('#text-response').html(response.message);
+					$('#response').modal('show');
+				}
+				$('#loading').modal('hide');
+			},
+			error: function(response){
+				$('#loading').modal('hide');
+				console.log(response);
+			}
+		});
 	});

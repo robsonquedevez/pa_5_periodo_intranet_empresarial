@@ -3,6 +3,8 @@
 	require_once(__DIR__.'/vendor/autoload.php');
 	require_once(__DIR__.'./function.php');
 
+	date_default_timezone_set("America/Sao_Paulo");
+
 	use Slim\Slim;
 	use App\Page;
 	use App\PageAdmin;	
@@ -21,13 +23,7 @@
 
 	$app->group('/file', function() use ($app){
 
-		$app->get('/include', function(){
-			$pgAdmin = new PageAdmin(array(
-				'username' 	=> 'Robson Quedevez',
-				'avatar'	=> '/../views/img/avatar/avatar.jpg'
-			));
-			$pgAdmin->setPage('incluirArquivo');
-		});
+		include(__DIR__.'\routes\includeFile.php');
 
 		$app->get('/private', function(){
 			$page = new PageAdmin(array(
