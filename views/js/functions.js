@@ -295,3 +295,194 @@ $(document).ready(() => {
 	});
 
 });
+
+	/* --------------     User      ------------------ */
+
+	const frmRegCategory = $('#frm-register-category');
+	const frmRegCategoryUp = $('#frm-register-category-update');
+
+	function deleteCategory(ev){
+		let id = ev.target.parentElement.parentElement.dataset.id;
+		let row = ev.target.parentElement.parentElement;
+
+		$.ajax({
+			url: '/register/category/delete/'+ id,
+			method: 'delete',
+			dataType: 'json',
+			beforeSend: function(response){
+				$('#loading').modal('show');
+			},
+			success: function(response){
+				console.log(response);
+
+				row.remove();
+
+				$('#loading').modal('hide');
+			},
+			error: function(response){
+				console.log(response);
+				$('#loading').modal('hide');
+			}
+		});
+	}
+
+	function updateCategory(ev){
+		let id = ev.target.parentElement.parentElement.dataset.id;
+		let categoria = ev.target.parentElement.parentElement.cells[0].textContent;
+		let departamento = ev.target.parentElement.parentElement.cells[1].textContent;
+
+		$('#idCategoryDbUp').val(id);
+		$('#idCategoryUp').val(categoria);
+		$('#idDepartamentoUp option:eq(0)').text(departamento);
+
+		$('#modalUpdateCategory').modal('show');
+	}
+
+	frmRegCategory.submit((ev) => {
+
+		ev.preventDefault();
+		let data = frmRegCategory.serialize();
+
+		$.ajax({
+			url: '/register/category/insert',
+			method: 'post',
+			data: data,
+			dataType: 'json',
+			beforeSend: function(response){
+				$('#loading').modal('show');
+			},
+			success: function(response){
+				console.log(response);
+				$('#loading').modal('hide');
+
+				if(response.status){
+
+					let table = $('#table-category tbody');
+
+					let newRow = `
+
+						<tr data-id=${response.message.id}>
+		                    <td>${response.message.categoria}</td>
+		                    <td>${response.message.departamento}</td>
+		                    <td>
+		                    	<button class="btn far fa-trash-alt center btnDelCategory"></button>
+		                    	<button class="btn far fa-edit center btnUpCategory"></button>
+		                    </td>
+	                  	</tr>
+					`;
+					
+					table.append(newRow).on('click', '.btnDelCategory', (ev) => {deleteUser(ev)}).on('click', '.btnUpCategory', (ev) => {updateUser(ev)});
+
+					frmRegCategory[0].reset();
+					$('#idNome').focus();
+
+				}else{
+					$('#text-response').html(response.message);
+					$('#response').modal('show');
+				}
+
+			},
+			error : function(response){
+				console.log(response);
+				$('#loading').modal('hide');
+			}
+		});
+	});
+
+	frmRegCategoryUp.submit((ev) => {
+		ev.preventDefault();
+		let data = frmRegCategoryUp.serialize();
+
+		$.ajax({
+			url: '/register/category/update',
+			method: 'post',
+			data: data,
+			dataType: 'json',
+			beforeSend: function(response){
+				$('#modalUpdateCategory').modal('hide');
+				$('#loading').modal('show');
+			},
+			success: function(response){
+				console.log(response);
+
+				if (response.status) {
+					$('#table-category > tbody > tr ').each(function (index) {						
+						if($(this)[0].dataset.id == response.message.id){							
+							$(this)[0].children[0].textContent = response.message.categoria;
+							$(this)[0].children[1].textContent = response.message.departamento;
+						}
+					});
+				}else{
+					$('#text-response').html(response.message);
+					$('#response').modal('show');
+				}
+				
+				$('#loading').modal('hide');
+			},
+			error: function(response){
+				console.log(response);
+				$('#loading').modal('hide');
+			}
+		});
+	});
+
+	$('.btnDelCategory').click((ev) => {
+		deleteCategory(ev);
+	});
+
+	$('.btnUpCategory').click((ev) =>{
+		updateCategory(ev);
+	});
+
+	/* --------------     File      ------------------ */
+
+
+	$("#idFile").change((ev) => {
+		$('#nameFileInput').text(ev.target.files[0].name);
+	});
+
+	const frmFileInclude = $('#frm-include-file');
+
+	frmFileInclude.submit((ev) => {
+		ev.preventDefault();
+		let data = new FormData();
+
+		if (ev.target[3].checked) {
+			$type = 'Publico'
+		}else{
+			$type = 'Privado'
+		}
+		
+		data.append("nome", ev.target[0].value);
+		data.append("departamento", ev.target[1].value);
+		data.append("categoria", ev.target[2].value);
+		data.append("tipo", $type);
+		data.append("file", ev.target[5].files[0]);
+		
+		$.ajax({
+			url: '/file/include',
+			type: 'post',
+			data: data,
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			beforeSend: function(response){
+				$('#loading').modal('show');
+			},
+			success: function(response){
+				console.log(response);
+
+				if (response.status) {
+					console.log(response);
+				}else{
+					$('#text-response').html(response.message);
+					$('#response').modal('show');
+				}
+				$('#loading').modal('hide');
+			},
+			error: function(response){
+				$('#loading').modal('hide');
+				console.log(response);
+			}
+		});
+	});

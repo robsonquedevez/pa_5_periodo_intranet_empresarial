@@ -176,6 +176,7 @@
 			$statement->bindParam(':DEPT', $_POST['departamento']);				
 			$statement->bindParam(':MANA', $_POST['gestor']);
 			$statement->execute();
+			$id = $connection->lastInsertId();
 
 			$id_dept = $_POST['departamento'];
 
@@ -190,7 +191,7 @@
 					'usuario'		=> $_POST['usuario'],
 					'departamento' 	=> $dept['nome'],
 					'gestor'		=> (($_POST['gestor'] == 1) ? "Sim" : "Não"),
-					'id'			=> $connection->lastInsertId()
+					'id'			=> $id
 				]
 			]));
 		} catch (Exception $e) {
