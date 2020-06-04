@@ -23,7 +23,7 @@
                           <div class="col-md-4 mb-3">
                             <div class="form-group">
                               <label>Departamento:</label>
-                              <select class="custom-select" name="departamento" id="idDepartamento" required="">
+                              <select class="custom-select" name="departamento" id="idDepartamentoFile" required="">
                                 <option value="-1">Selecione</option>
                                 {loop="$departamento"}                                    
                                 <option value="{$value.id}">{$value.nome}</option>
@@ -35,11 +35,8 @@
                           <div class="col-md-4 mb-3">
                             <div class="form-group">
                               <label>Categorias:</label>
-                              <select class="custom-select" name="categoria" id="idCategoria" required="">
-                                <option value="-1">Selecione</option>
-                                {loop="$categoria"}                                  
-                                <option value="{$value.id}">{$value.nome}</option>
-                                {/loop}
+                              <select class="custom-select" name="categoria" id="idCategoriaFile" required="" disabled="">
+                                <option value="-1">Selecione</option>                                
                               </select>
                             </div>
                           </div>
@@ -81,7 +78,7 @@
       
                       <!-- Inicio Tabela Departamento -->
                       <div class="table-responsive my-5">
-                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <table class="table table-bordered" id="table-files" width="100%" cellspacing="0">
                           <thead>
                             <tr>
                               <th>Nome do Arquivo:</th>
@@ -102,22 +99,52 @@
                                 <td>{$value.usuario}</td>
                                 <td>{$value.departamento}</td>
                                 <td>{$value.categoria}</td>
-                                <td>{$value.tamanho}</td>
+                                <td>{function="formatByteToKb($value.tamanho)"}</td>
                                 <td>{function="formatDate($value.dtHrEnvio)"}</td>
                                 <td>
-                                  <button class="btn far fa-trash-alt center"></button>
-                                  <button class="btn far fa-edit center"></button>
-                                  <button class="btn far fa-clock center"></button>
+                                  <button class="btn far fa-trash-alt center btnDelFile" title="Excluir"></button>
+                                  <button class="btn far fa-edit center btnUpdateFile" title="Editar"></button>
+                                  <button class="btn far fa-clock center" title="Histórico"></button>
+                                  <a class="btn far fa-file-pdf center" href="http://www.intranet.com.br{$value.caminho}" title="{$value.nomeArquivo}" target="_blank"></a>
                                 </td>
                               </tr>
 
                             {/loop}
-                            
+                          </tbody>
                         </table>
                       </div>
                     </div>
                   </div> 
               </div>
       </div>
+
+
+       <div class="modal fade" id="response" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body"> 
+                <span id="text-response"></span>
+              </div>
+              <div class="modal-footer">
+                  <button data-dismiss="modal" class="btn btn-primary">Fechar</button>
+              </div>             
+            </div>
+          </div>
+        </div>
+
+         <div class="modal fade" id="modalConfirmDeleteFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="card-body">
+                Deseja realmente excluir?
+                <input type="hidden" id="idDeleteFile">
+              </div>             
+              <div class="card-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger">Cancelar</button>
+                <button type="button" class="btn btn-secundary" id='btnDelFileOk'>Excluir</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
       

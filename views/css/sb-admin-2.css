@@ -10992,3 +10992,11 @@ body.sidebar-toggled footer.sticky-footer {
 .fa-edit:hover {
   color: #4e73df;
 }
+
+.fa-clock:hover {
+  color: #4e73df;
+}
+
+.fa-file-pdf:hover {
+  color: #1cc88a;
+}

@@ -441,7 +441,76 @@ $(document).ready(() => {
 		$('#nameFileInput').text(ev.target.files[0].name);
 	});
 
+	$('#idDepartamentoFile').change((ev) => {
+		$.ajax({
+			url: '/file/include/categoria/' + ev.target.value,
+			method: 'post',
+			dataType: 'json',
+			beforeSend: function(response){
+
+				$('#idCategoriaFile > option').each(function(index){
+					if (index != 0) {
+						this.remove();
+					}
+				});
+
+				$('#loading').modal('show');
+			},
+			success: function(response){
+
+				$(response.message).each(function(index) {
+					$('#idCategoriaFile').append(`<option value="${this.id}">${this.nome}</option>`);
+				});		
+
+				$('#idCategoriaFile').attr('disabled', false);
+
+				$('#loading').modal('hide');
+			},
+			error: function(response){
+
+			}
+		});
+	});
+
 	const frmFileInclude = $('#frm-include-file');
+
+	function deleteFile(ev){
+		let id = ev.target.parentElement.parentElement.dataset.id;
+		let row = ev.target.parentElement.parentElement;
+
+		$('#idDeleteFile').val(id);
+
+		$('#modalConfirmDeleteFile').modal('show');		
+
+		$('#btnDelFileOk').click((ev) => {
+
+			$('#modalConfirmDeleteFile').modal('hide');
+
+			$.ajax({
+				url: '/file/include/delete/'+ id,
+				method: 'delete',
+				dataType: 'json',
+				beforeSend: function(response){
+					$('#loading').modal('show');
+				},
+				success: function(response){
+					console.log(response);
+
+					row.remove();
+
+					$('#loading').modal('hide');
+				},
+				error: function(response){
+					console.log(response);
+					$('#loading').modal('hide');
+				}
+			});
+		});				
+	}
+
+	function updateFile(ev){
+
+	}
 
 	frmFileInclude.submit((ev) => {
 		ev.preventDefault();
@@ -460,9 +529,10 @@ $(document).ready(() => {
 		data.append("file", ev.target[5].files[0]);
 		
 		$.ajax({
-			url: '/file/include',
+			url: '/file/include/insert',
 			type: 'post',
 			data: data,
+			dataType: 'json',
 			enctype: 'multipart/form-data',
 			processData: false,
 			contentType: false,
@@ -470,14 +540,32 @@ $(document).ready(() => {
 				$('#loading').modal('show');
 			},
 			success: function(response){
-				console.log(response);
 
-				if (response.status) {
-					console.log(response);
-				}else{
-					$('#text-response').html(response.message);
-					$('#response').modal('show');
-				}
+				let table = $('#table-files > tbody');
+
+				let newRow = `
+					<tr data-id="${response.message.id}">
+	                    <td>${response.message.nome}</td>
+	                    <td>${response.message.usuario}</td>
+	                    <td>${response.message.departamento}</td>
+	                    <td>${response.message.categoria}</td>
+	                    <td>${response.message.tamanho}</td>
+	                    <td>${response.message.data}</td>
+	                    <td>
+	                      <button class="btn far fa-trash-alt center btnDelFile" title="Excluir"></button>
+	                      <button class="btn far fa-edit center btnUpdateFile" title="Editar"></button>
+	                      <button class="btn far fa-clock center" title="Histórico"></button>
+	                      <a class="btn far fa-file-pdf center" href="http://www.intranet.com.br${response.message.caminho}" title="${response.message.anexoNome}" target="_blank"></a>
+	                    </td>
+                  	</tr>
+				`;
+
+				table.append(newRow).on('click', '.btnDelFile', (ev) => {deleteFile(ev)}).on('click', '.btnUpdateFile', (ev) => {updateFile(ev)});
+
+				frmFileInclude[0].reset();
+				$('#nameFileInput').text('Escolher arquivo');
+				$('#idNome').focus();
+
 				$('#loading').modal('hide');
 			},
 			error: function(response){
@@ -486,3 +574,8 @@ $(document).ready(() => {
 			}
 		});
 	});
+
+	$('.btnDelFile').click((ev) => {
+		deleteFile(ev);
+	});
+

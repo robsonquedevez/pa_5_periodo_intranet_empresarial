@@ -6,30 +6,86 @@
 	use App\Sql;
 	use App\File;
 
-	$app->get('/include', function(){
-
-		$pgAdmin = new PageAdmin(array(
-			'username' 	=> 'Robson Quedevez',
-			'avatar'	=> '/../views/img/avatar/avatar.jpg'
-		));
+	$app->post('/include/categoria/:id', function($id) use ($app){
+		sleep(1);
+		if (!isset($id) || empty($id)) {
+			return $app->response->write(json_encode([
+				'status' 	=> false,
+				'message'	=> 'Erro ao carregar categoria, tente novamente'
+			]));
+		}
 
 		$sql = new Sql();
 		$connection = $sql->getConnection();
+		try {
+			$queryCategoria = $connection->query("SELECT id, nome FROM tb_categorias WHERE departamento = $id");
+			$categoria = $queryCategoria->fetchAll();
 
-		$queryDept = $connection->query("SELECT id, nome FROM tb_departamento");
+			return $app->response->write(json_encode([
+				'status'	=> true,
+				'message'	=> $categoria
+			]));
 
-		$queryCat = $connection->query("SELECT id, nome FROM tb_categorias");
+		} catch (Exception $e) {
+			return $app->response->write(json_encode([
+				'status'	=> false,
+				'message'	=> $e->getMessage()
+			]));
+		}
 
-		$queryFiles = $connection->query("SELECT doc.id, doc.nome, usu.nome AS usuario, dept.nome AS departamento, cat.nome AS categoria, anx.tamanho, doc.dtHrEnvio FROM tb_documentos AS doc INNER JOIN tb_usuarios AS usu ON doc.usuario = usu.id INNER JOIN tb_departamento AS dept ON doc.departamento = dept.id INNER JOIN tb_categorias AS cat ON doc.categoria = cat.id INNER JOIN tb_anexo AS anx ON doc.id = anx.id_documento");
+	});
+	
+	$app->delete('/include/delete/:id', function($id) use ($app){
+		sleep(1);
 
-		$pgAdmin->setPage('incluirArquivo', array(
-			'departamento' 	=>  $queryDept->fetchAll(),
-			'categoria'		=> 	$queryCat->fetchAll(),
-			'documento'		=> 	$queryFiles->fetchAll()
-		));
+		if(!isset($id)){
+				return $app->response->write(json_encode([
+					'status' 	=> false,
+					'message'	=> 'Nenhuma Arquivo foi selecionado'
+				]));
+			}
+
+			$sql = new Sql();
+			$connection = $sql->getConnection();
+
+			$queryFiles = $connection->query("SELECT caminho FROM tb_anexo WHERE id_documento = $id");
+
+			$file = $queryFiles->fetchAll()[0]['caminho'];
+			$caminho = $_SERVER['DOCUMENT_ROOT'] . $file;
+
+			if(!unlink($caminho)){
+				return $app->response->write(json_encode([
+					'status' 	=> false,
+					'message'	=> 'Erro ao excluir arquivo'
+				]));
+			}
+
+			try {			
+
+				
+				$statement = $connection->prepare('DELETE FROM tb_documentos WHERE id = :ID');
+				$statement->bindParam(':ID', $id);
+				$statement->execute();
+				
+
+				$statement = $connection->prepare('DELETE FROM tb_anexo WHERE id_documento = :ID');
+				$statement->bindParam(':ID', $id);
+				$statement->execute();
+				
+
+				return $app->response->write(json_encode([
+					'status'	=> true,
+					'message'	=> 'Item excluido'
+				]));
+			} catch (Exception $e) {
+				return $app->response->write(json_encode([
+					'status' 	=> false,
+					'message'	=> $e->getMessage()
+				]));
+			}
 	});
 
-	$app->post('/include', function() use ($app) {
+	$app->post('/include/insert', function() use ($app) {
 		sleep(1);
 
 		if(!isset($_POST['nome']) || empty($_POST['nome']) || !isset($_POST['departamento']) || empty($_POST['departamento']) || !isset($_POST['categoria']) || empty($_POST['categoria']) || !isset($_POST['tipo']) || empty($_POST['tipo'])){
@@ -65,7 +121,7 @@
 			$statement->execute();
 			$id = $connection->lastInsertId();
 
-			$path = __DIR__.'\..\views\files\\';
+			$path = __DIR__.'\..\views\files\\';			
 
 			$ext = explode('/', $_FILES['file']['type']);
 			$ext = $ext[1];
@@ -74,20 +130,40 @@
 
 			$nameFile = hash('md5', $name).'.'.$ext;
 
+			$httpPath = '/views/files/' . $nameFile;
+
 			$uploadFile = $path . basename($nameFile);
 
 			move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile);
 
 			$statement = $connection->prepare('INSERT INTO tb_anexo (id_documento, caminho, data, nome, tamanho) VALUES (:IDDOC, :CAMI, :DTHR, :NOME, :TAM)');
 			$statement->bindParam(':IDDOC', $id);
-			$statement->bindParam(':CAMI', $uploadFile);
+			$statement->bindParam(':CAMI', $httpPath);
 			$statement->bindParam(':DTHR', $dt);
 			$statement->bindParam(':NOME', $_FILES['file']['name']);
 			$statement->bindParam(':TAM', $_FILES['file']['size']);
 			$statement->execute();
 
+			$queryFiles = $connection->query("SELECT doc.id, doc.nome, usu.nome AS usuario, dept.nome AS departamento, cat.nome AS categoria, anx.tamanho, doc.dtHrEnvio, anx.nome AS nomeArquivo, anx.caminho FROM tb_documentos AS doc INNER JOIN tb_usuarios AS usu ON doc.usuario = usu.id INNER JOIN tb_departamento AS dept ON doc.departamento = dept.id INNER JOIN tb_categorias AS cat ON doc.categoria = cat.id INNER JOIN tb_anexo AS anx ON doc.id = anx.id_documento WHERE doc.id = $id");
+
+			$file = $queryFiles->fetchAll()[0];
+
+			$dtFormatada = new DateTime($file['dtHrEnvio']);
+			$dtFormatada = $dtFormatada->format("d/m/Y H:i:s");				
+
 			return $app->response->write(json_encode([
-				'status'	=> true
+				'status'	=> true,
+				'message'	=> [
+						'id'			=> $file['id'],
+						'nome'			=> $file['nome'],
+						'usuario'		=> $file['usuario'],
+						'departamento'	=> $file['departamento'],
+						'categoria'		=> $file['categoria'],
+						'tamanho'		=> (round(($file['tamanho'] / 1024)) . 'KB'),
+						'data'			=> $dtFormatada,
+						'anexoNome'		=> $file['nomeArquivo'],
+						'caminho'		=> $file['caminho']
+				]
 			]));
 
 		} catch (Exception $e) {
@@ -96,7 +172,26 @@
 				'message'	=> $e->getMessage()
 			]));
 		}
-		return;
+	});
+
+	$app->get('/include', function(){
+
+		$pgAdmin = new PageAdmin(array(
+			'username' 	=> 'Robson Quedevez',
+			'avatar'	=> '/../views/img/avatar/avatar.jpg'
+		));
+
+		$sql = new Sql();
+		$connection = $sql->getConnection();
+
+		$queryDept = $connection->query("SELECT id, nome FROM tb_departamento");
+
+		$queryFiles = $connection->query("SELECT doc.id, doc.nome, usu.nome AS usuario, dept.nome AS departamento, cat.nome AS categoria, anx.tamanho, doc.dtHrEnvio, anx.nome AS nomeArquivo, anx.caminho FROM tb_documentos AS doc INNER JOIN tb_usuarios AS usu ON doc.usuario = usu.id INNER JOIN tb_departamento AS dept ON doc.departamento = dept.id INNER JOIN tb_categorias AS cat ON doc.categoria = cat.id INNER JOIN tb_anexo AS anx ON doc.id = anx.id_documento");
+
+		$pgAdmin->setPage('incluirArquivo', array(
+			'departamento' 	=>  $queryDept->fetchAll(),
+			'documento'		=> 	$queryFiles->fetchAll()
+		));
 	});
 
 ?>

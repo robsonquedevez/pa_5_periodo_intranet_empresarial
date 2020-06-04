@@ -74,7 +74,7 @@
 				'status'	=> true,
 				'message'	=> [
 					'categoria' 	=> $categoria['nome'],
-					'departamento'		=> $categoria['departamento'],
+					'departamento'	=> $categoria['departamento'],
 					'id'			=> $categoria['id']
 				]
 			]));

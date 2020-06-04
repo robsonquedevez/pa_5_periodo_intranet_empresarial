@@ -12,5 +12,9 @@
 		return $date->format('d/m/Y H:i:s');
 	}
 
+	function formatByteToKb($value){
+		return round(($value / 1024)) . 'KB';
+	}
+
 
 ?>
