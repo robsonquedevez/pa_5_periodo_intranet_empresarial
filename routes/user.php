@@ -4,6 +4,50 @@
 	use App\Page;
 	use App\PageAdmin;	
 	use App\Sql;
+	use App\Model;
+	use App\User;
+
+	$app->post('/user/avatar', function() use ($app){
+		sleep(1);
+		$path = __DIR__.'\..\views\img\avatar\\';
+		$ext = explode('/', $_FILES['file']['type']);
+		$ext = $ext[1];
+		$name = $_FILES['file']['name'].date('YmdHis');
+		$nameFile = hash('md5', $name).'.'.$ext;
+
+		$uploadFile = $path . basename($nameFile);
+
+		if (!move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)) {
+			return $app->response->write(json_encode([
+				'status'	=> false,
+				'message' 	=> "Erro ao gravar imagem"
+			]));
+		}
+
+		$sql = new Sql();
+		$connection = $sql->getConnection();
+
+		try {
+			$statement = $connection->prepare('UPDATE tb_usuarios SET avatar = :AVA WHERE id = :ID');
+			$statement->bindParam(':AVA', $nameFile);
+			$statement->bindParam(':ID', $_POST['id']);
+			$statement->execute();
+
+			$_SESSION['User']['avatar'] = $nameFile;
+
+			return $app->response->write(json_encode([
+				'status'	=> true,
+				'message' 	=> [
+					'avatar' => $nameFile
+				]
+			]));
+		} catch (Exception $e) {
+			return $app->response->write(json_encode([
+				'status'	=> false,
+				'message' 	=> $e->getMessage()
+			]));
+		}
+	});
 
 	$app->delete('/user/delete/:id', function($id) use ($app){
 			sleep(1);
@@ -203,9 +247,11 @@
 	});
 
 	$app->get('/user', function(){
+		User::verifyLogin();
+		
 		$pgAdmin = new PageAdmin(array(
-			'username' 	=> 'Robson Quedevez',
-			'avatar'	=> '/../views/img/avatar/avatar.jpg'
+			'username' 	=> $_SESSION['User']['nome'],
+			'avatar'	=> $_SESSION['User']['avatar']
 		));
 
 		$sql = new Sql();

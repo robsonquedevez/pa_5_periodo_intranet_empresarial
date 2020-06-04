@@ -541,30 +541,35 @@ $(document).ready(() => {
 			},
 			success: function(response){
 
-				let table = $('#table-files > tbody');
+				if (response.status) {
+					let table = $('#table-files > tbody');
 
-				let newRow = `
-					<tr data-id="${response.message.id}">
-	                    <td>${response.message.nome}</td>
-	                    <td>${response.message.usuario}</td>
-	                    <td>${response.message.departamento}</td>
-	                    <td>${response.message.categoria}</td>
-	                    <td>${response.message.tamanho}</td>
-	                    <td>${response.message.data}</td>
-	                    <td>
-	                      <button class="btn far fa-trash-alt center btnDelFile" title="Excluir"></button>
-	                      <button class="btn far fa-edit center btnUpdateFile" title="Editar"></button>
-	                      <button class="btn far fa-clock center" title="Histórico"></button>
-	                      <a class="btn far fa-file-pdf center" href="http://www.intranet.com.br${response.message.caminho}" title="${response.message.anexoNome}" target="_blank"></a>
-	                    </td>
-                  	</tr>
-				`;
+					let newRow = `
+						<tr data-id="${response.message.id}">
+		                    <td>${response.message.nome}</td>
+		                    <td>${response.message.usuario}</td>
+		                    <td>${response.message.departamento}</td>
+		                    <td>${response.message.categoria}</td>
+		                    <td>${response.message.tamanho}</td>
+		                    <td>${response.message.data}</td>
+		                    <td>
+		                      <button class="btn far fa-trash-alt center btnDelFile" title="Excluir"></button>
+		                      <button class="btn far fa-edit center btnUpdateFile" title="Editar"></button>
+		                      <a class="btn far fa-file-pdf center" href="http://www.intranet.com.br${response.message.caminho}" title="${response.message.anexoNome}" target="_blank"></a>
+		                    </td>
+	                  	</tr>
+					`;
 
-				table.append(newRow).on('click', '.btnDelFile', (ev) => {deleteFile(ev)}).on('click', '.btnUpdateFile', (ev) => {updateFile(ev)});
+					table.append(newRow).on('click', '.btnDelFile', (ev) => {deleteFile(ev)}).on('click', '.btnUpdateFile', (ev) => {updateFile(ev)});
 
-				frmFileInclude[0].reset();
-				$('#nameFileInput').text('Escolher arquivo');
-				$('#idNome').focus();
+					frmFileInclude[0].reset();
+					$('#idCategoriaFile').attr('disabled', true);
+					$('#nameFileInput').text('Escolher arquivo');
+					$('#idNome').focus();
+				}else{
+					$('#text-response').html(response.message);
+					$('#response').modal('show');
+				}
 
 				$('#loading').modal('hide');
 			},
@@ -579,3 +584,138 @@ $(document).ready(() => {
 		deleteFile(ev);
 	});
 
+	/* --------------     File      ------------------ */
+
+	$('#btnChangeAvatar').click(() => {
+		$('#profileAvatar').trigger('click');
+	});
+
+	$('#profileAvatar').change((ev) => {
+		let id = $('#IdUserSession').val();
+
+		let data = new FormData();
+
+		data.append('id', id);
+		data.append('file', ev.target.files[0]);
+
+		$.ajax({
+			url: '/register/user/avatar',
+			type: 'post',
+			data: data,
+			dataType: 'json',
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			beforeSend: function(response){
+				$('#loading').modal('show');
+			},
+			success: function(response){
+				console.log(response);
+
+				if (response.status) {
+					$('#imgProfile').attr('src', "/views/img/avatar/" + response.message.avatar);
+					$('#imgAvatarHeader').attr('src', "/views/img/avatar/" + response.message.avatar);
+				}else{
+					$('#text-response').html(response.message);
+					$('#response').modal('show');
+				}
+
+				$('#loading').modal('hide');
+			},
+			error: function(response){
+				console.log(response);
+				$('#loading').modal('hide');
+			}
+
+		});
+	});
+
+	$('.btnHistory').click((ev) => {
+		let id = ev.target.parentElement.parentElement.dataset.id;
+
+		$.ajax({
+			url: '/file/private/log/' + id,
+			type: 'post',
+			dataType: 'json',
+			beforeSend: function(response){
+				$('#loading').modal('show');
+			},
+			success: function(response){				
+
+				if (response.status) {							
+
+					$(response.message).each(function(){
+
+						let timeLine = ``;
+
+						if(this.tipo == 'Inserido'){
+							timeLine += `
+
+								<div class="timeline">
+	                              <div class="timeline-icon"><i class="fas fa-plus-circle"></i></div>
+	                              <span class="year">${this.data}</span>
+	                              <div class="timeline-content">
+	                                  <h5 class="title">${this.tipo}</h5>
+	                                  <p class="description">
+	                                      <span>${this.arquivo}</span><br>
+	                                      Alterado por: </span>${this.usuario}</span>
+	                                  </p>
+	                              </div>
+		                         </div>
+
+							`;
+						}
+
+						if(this.tipo == 'Atualizado'){
+							timeLine += `
+
+								<div class="timeline">
+	                              <div class="timeline-icon"><i class="fas fa-edit"></i></div>
+	                              <span class="year">${this.data}</span>
+	                              <div class="timeline-content">
+	                                  <h5 class="title">${this.tipo}</h5>
+	                                  <p class="description">
+	                                      <span>${this.arquivo}</span><br>
+	                                      Alterado por: </span>${this.usuario}</span> 
+	                                  </p>
+	                              </div>
+		                         </div>
+
+							`;
+						}else{
+							timeLine += `
+
+								<div class="timeline">
+	                              <div class="timeline-icon"><i class="far fa-trash-alt"></i></div>
+	                              <span class="year">${this.data}</span>
+	                              <div class="timeline-content">
+	                                  <h5 class="title">${this.tipo}</h5>
+	                                  <p class="description">
+	                                      <span>${this.arquivo}</span><br>
+	                                      Alterado por: </span>${this.usuario}</span> 
+	                                  </p>
+	                              </div>
+		                         </div>
+
+							`;
+						}
+
+						$('#timelineBody').append(timeLine);
+						$('#historyModal').modal('show');
+					});
+
+
+				}else{
+					$('#text-response').html(response.message);
+					$('#response').modal('show');
+				}
+
+				$('#loading').modal('hide');
+			},
+			error: function(response){
+				console.log(response);
+				$('#loading').modal('hide');
+			}
+
+		});
+	});

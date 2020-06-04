@@ -4,7 +4,8 @@
 	use App\Page;
 	use App\PageAdmin;	
 	use App\Sql;
-	use App\File;
+	use App\Model;
+	use App\User;
 
 	$app->post('/include/categoria/:id', function($id) use ($app){
 		sleep(1);
@@ -176,9 +177,11 @@
 
 	$app->get('/include', function(){
 
+		User::verifyLogin();
+
 		$pgAdmin = new PageAdmin(array(
-			'username' 	=> 'Robson Quedevez',
-			'avatar'	=> '/../views/img/avatar/avatar.jpg'
+			'username' 	=> $_SESSION['User']['nome'],
+			'avatar'	=> $_SESSION['User']['avatar']
 		));
 
 		$sql = new Sql();

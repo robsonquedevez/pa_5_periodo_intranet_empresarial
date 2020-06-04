@@ -40,12 +40,12 @@
                   <div class="text-center">
                     <h1 class="h4 text-gray-900 mb-4">Seja Bem Vindo!</h1>
                   </div>
-                  <form class="user">
+                  <form action="/login" method="POST" class="user">
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" id="idUsuario" name="usuario" aria-describedby="usuario" placeholder="Digite seu usuário...">
+                      <input type="text" class="form-control form-control-user" id="idUsuario" name="user" aria-describedby="usuario" placeholder="Digite seu usuário...">
                     </div>
                     <div class="form-group">
-                      <input type="password" class="form-control form-control-user" id="idPassword" name="usuario" placeholder="Senha">
+                      <input type="password" class="form-control form-control-user" id="idPassword" name="password" placeholder="Senha">
                     </div>
                     <div class="form-group">
                       <div class="custom-control custom-checkbox small">
@@ -53,9 +53,7 @@
                         <label class="custom-control-label" for="customCheck">Lembrar</label>
                       </div>
                     </div>
-                    <a href="/home" class="btn btn-primary btn-user btn-block">
-                      Entrar
-                    </a>
+                    <button class="btn btn-primary" type="submit">Entrar</button>
                     <hr>
                   </form>
                   

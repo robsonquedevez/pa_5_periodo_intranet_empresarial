@@ -95,11 +95,16 @@
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo htmlspecialchars( $username, ENT_COMPAT, 'UTF-8', FALSE ); ?></span>
-                <img class="img-profile rounded-circle" src="<?php echo htmlspecialchars( $avatar, ENT_COMPAT, 'UTF-8', FALSE ); ?>">
+                <?php if( $avatar != NULL ){ ?>
+                  <img class="img-profile rounded-circle" src='/views/img/avatar/<?php echo htmlspecialchars( $avatar, ENT_COMPAT, 'UTF-8', FALSE ); ?>' id="imgAvatarHeader">
+
+                <?php }else{ ?>
+                  <img class="img-profile rounded-circle" src='/views/img/avatar/default.png' id="imgAvatarHeader">
+                <?php } ?>
               </a>
 
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="/profile">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Perfil
                 </a>

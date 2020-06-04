@@ -104,7 +104,6 @@
                                 <td>
                                   <button class="btn far fa-trash-alt center btnDelFile" title="Excluir"></button>
                                   <button class="btn far fa-edit center btnUpdateFile" title="Editar"></button>
-                                  <button class="btn far fa-clock center" title="Histórico"></button>
                                   <a class="btn far fa-file-pdf center" href="http://www.intranet.com.br<?php echo htmlspecialchars( $value1["caminho"], ENT_COMPAT, 'UTF-8', FALSE ); ?>" title="<?php echo htmlspecialchars( $value1["nomeArquivo"], ENT_COMPAT, 'UTF-8', FALSE ); ?>" target="_blank"></a>
                                 </td>
                               </tr>

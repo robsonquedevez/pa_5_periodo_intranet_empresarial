@@ -34,7 +34,7 @@
                                 <td>{$value.categoria}</td>
                                 <td>{function="formatDate($value.dtHrEnvio)"}</td>
                                 <td>                                  
-                                  <button class="btn btn-link btnHistory fas fa-clock"></button>
+                                  <button class="btn btn-link"><i class="fas fa-history" data-toggle="modal" data-target="#historyModal"></i></button>
                                   <a class="btn far fa-file-pdf center" href="http://www.intranet.com.br{$value.caminho}" title="{$value.nomeArquivo}" target="_blank"></a>
                                 </td>
                               </tr>
@@ -51,7 +51,25 @@
                   </div>
  
               </div>
-              <!-- /.container-fluid -->    
+              <!-- /.container-fluid -->
+
+    <!-- Delete Modal-->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Deseja excluir o arquivo?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Não</button>
+            <a class="btn btn-primary" href="#">Sim</a>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Hisotory Modal-->
     <div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -68,9 +86,8 @@
             <div class="container">
               <div class="row">
                   <div class="col-md-12">
-                      <div class="main-timeline7" id="timelineBody">
-
-                          <!--<div class="timeline">
+                      <div class="main-timeline7">
+                          <div class="timeline">
                               <div class="timeline-icon"><i class="fas fa-plus-circle"></i></div>
                               <span class="year">12/05/2018 18:30</span>
                               <div class="timeline-content">
@@ -81,7 +98,6 @@
                                   </p>
                               </div>
                           </div>
-
                           <div class="timeline">
                               <div class="timeline-icon"><i class="fas fa-edit"></i></div>
                               <span class="year">15/05/2017 15:50</span>
@@ -93,10 +109,17 @@
                                   </p>
                               </div>
                           </div>
-
-                          
-
-
+                          <div class="timeline">
+                              <div class="timeline-icon"><i class="fas fa-edit"></i></div>
+                              <span class="year">15/05/2017 15:50</span>
+                              <div class="timeline-content">
+                                  <h5 class="title">Atualizado</h5>
+                                  <p class="description">
+                                      <span>Folha_de_Pagamento_V6.pdf</span><br>
+                                      Alterado por: </span>Robson Quedevez</span> 
+                                  </p>
+                              </div>
+                          </div>
                           <div class="timeline">
                               <div class="timeline-icon"><i class="far fa-trash-alt"></i></div>
                               <span class="year">15/05/2017 15:50</span>
@@ -107,8 +130,7 @@
                                       Alterado por: </span>Diego Broetto</span>
                                   </p>
                               </div>
-                          </div>-->
-
+                          </div>
                       </div>
                   </div>
               </div>

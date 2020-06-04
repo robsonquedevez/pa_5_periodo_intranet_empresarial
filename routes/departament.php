@@ -4,6 +4,8 @@
 	use App\Page;
 	use App\PageAdmin;	
 	use App\Sql;
+	use App\Model;
+	use App\User;
 	
 	$app->delete('/departament/delete/:id', function($id) use ($app){
 			sleep(1);
@@ -148,9 +150,10 @@
 	});
 
 	$app->get('/departament', function(){
+		User::verifyLogin();
 		$pgAdmin = new PageAdmin(array(
-			'username' 	=> 'Robson Quedevez',
-			'avatar'	=> '/../views/img/avatar/avatar.jpg'
+			'username' 	=> $_SESSION['User']['nome'],
+			'avatar'	=> $_SESSION['User']['avatar']
 		));
 
 		$sql = new Sql();
