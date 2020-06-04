@@ -43,6 +43,14 @@
 		});
 	});
 
+	$app->get('/profile', function(){
+		$pgAdmin = new PageAdmin(array(
+			'username' 	=> 'Robson Quedevez',
+			'avatar'	=> '/../views/img/avatar/avatar.jpg'
+		));
+		$pgAdmin->setPage('profile');
+	});
+
 	$app->get('/home', function(){
 		$pgAdmin = new PageAdmin(array(
 				'username' 	=> 'Robson Quedevez',

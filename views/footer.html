@@ -27,7 +27,7 @@
 
   </div>
   <script src="/../views/vendor/jquery/jquery.min.js"></script>
-  <script src="/../views/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/../views/vendor/bootstrap/js/bootstrap.bundle.js"></script>
   <script src="/../views/vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="/../views/js/sb-admin-2.min.js"></script>
   <script src="/../vendor/fontawesome-free-5.13.0-web/js/all.js"></script>
