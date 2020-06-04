@@ -1,5 +1,7 @@
 <?php
 
+	session_start();
+
 	require_once(__DIR__.'/vendor/autoload.php');
 	require_once(__DIR__.'./function.php');
 
@@ -9,11 +11,56 @@
 	use App\Page;
 	use App\PageAdmin;	
 	use App\Sql;
+	use App\Model;
+	use App\User;
 
 	$app = new Slim();
 
-	$app->group('/register', function() use ($app){		
+	$app->get('/', function(){
 
+		$page = new Page();
+
+		$page->setPage('login');
+	});
+
+	$app->get('/home', function(){
+
+		User::verifyLogin();
+
+		$pgAdmin = new PageAdmin(array(
+				'username' 	=> "Robson",
+				'avatar'	=> '/../views/img/avatar/avatar.jpg'
+			));
+		$pgAdmin->setPage('home');
+	});
+
+	$app->get('/login', function() {
+
+		$page = new Page();
+
+		$page->setPage('login');
+	});
+
+	$app->post('/login', function() {
+
+		User::Login($_POST['user'], $_POST['password']);
+
+		header('Location: /home');
+		exit;
+	});
+
+
+	$app->get('/logout', function(){
+
+		User::logout();
+
+		$page = new Page();
+		session_destroy();
+		$page->setPage('login');
+	});
+
+	$app->group('/register', function() use ($app){
+		
 		include(__DIR__.'\routes\user.php');
 
 		include(__DIR__.'\routes\category.php');
@@ -43,32 +90,20 @@
 		});
 	});
 
+	$app->get('/access', function(){
+		$pgAdmin = new PageAdmin(array(
+			'username' 	=> 'Robson Quedevez',
+			'avatar'	=> '/../views/img/avatar/avatar.jpg'
+		));
+		$pgAdmin->setPage('acessos');
+	});
+
 	$app->get('/profile', function(){
 		$pgAdmin = new PageAdmin(array(
 			'username' 	=> 'Robson Quedevez',
 			'avatar'	=> '/../views/img/avatar/avatar.jpg'
 		));
 		$pgAdmin->setPage('profile');
-	});
-
-	$app->get('/home', function(){
-		$pgAdmin = new PageAdmin(array(
-				'username' 	=> 'Robson Quedevez',
-				'avatar'	=> '/../views/img/avatar/avatar.jpg'
-			));
-		$pgAdmin->setPage('home');
-	});
-
-	$app->get('/logout', function(){
-		$page = new Page();
-
-		$page->setPage('login');
-	});
-
-	$app->get('/', function(){
-		$page = new Page();
-
-		$page->setPage('login');
 	});
 
 	$app->run();

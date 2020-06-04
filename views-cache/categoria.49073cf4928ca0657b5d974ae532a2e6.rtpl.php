@@ -12,6 +12,8 @@
                       <form id="frm-register-category">
       
                         <div class="form-row">
+
+                          
                           <div class="col-md-4 mb-3">
                             <label>Nome Categoria: </label>
                             <input type="text" class="form-control" id="idCategoria" placeholder="Categoria" name="categoria" required>

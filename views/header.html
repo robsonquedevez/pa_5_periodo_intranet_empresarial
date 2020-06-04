@@ -54,6 +54,7 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="/register/user">Usuários</a>
+            <a class="collapse-item" href="/access">Acessos</a>
             <a class="collapse-item" href="/register/departament">Departamentos</a>
             <a class="collapse-item" href="/register/category">Categorias</a>
           </div>
