@@ -49,7 +49,6 @@
 		exit;
 	});
 
-
 	$app->get('/logout', function(){
 
 		User::logout();
@@ -74,13 +73,7 @@
 
 		include(__DIR__.'\routes\privateFiles.php');
 
-		$app->get('/public', function(){
-			$pgAdmin = new PageAdmin(array(
-				'username' 	=> $_SESSION['User']['nome'],
-				'avatar'	=> $_SESSION['User']['avatar']
-			));
-			$pgAdmin->setPage('arquivosPublicos');
-		});
+		include(__DIR__.'\routes\publicFiles.php');
 	});
 
 	$app->get('/access', function(){

@@ -2,10 +2,11 @@
                 
                 <div class="container-fluid">
 
+                  <a href="/file/public" class="btn btn-primary border-0 mb-3">Voltar</a>
 
                   <div class="card mb-4">
                     <div class="card-header">
-                      Arquivos Privados: Tecnologia da Informação
+                      Arquivos Públicos {$nome}
                     </div>
                     <div class="card-body">
                       
@@ -34,7 +35,7 @@
                                 <td>{$value.categoria}</td>
                                 <td>{function="formatDate($value.dtHrEnvio)"}</td>
                                 <td>                                  
-                                  <button class="btn btn-link"><i class="fas fa-history" data-toggle="modal" data-target="#historyModal"></i></button>
+                                  <button class="btn btn-link btnHistory fas fa-clock"></button>
                                   <a class="btn far fa-file-pdf center" href="http://www.intranet.com.br{$value.caminho}" title="{$value.nomeArquivo}" target="_blank"></a>
                                 </td>
                               </tr>
@@ -86,51 +87,8 @@
             <div class="container">
               <div class="row">
                   <div class="col-md-12">
-                      <div class="main-timeline7">
-                          <div class="timeline">
-                              <div class="timeline-icon"><i class="fas fa-plus-circle"></i></div>
-                              <span class="year">12/05/2018 18:30</span>
-                              <div class="timeline-content">
-                                  <h5 class="title">Inserido</h5>
-                                  <p class="description">
-                                      <span>Folha_de_Pagamento_V5.pdf</span><br>
-                                      Alterado por: </span>Diego Broetto</span>
-                                  </p>
-                              </div>
-                          </div>
-                          <div class="timeline">
-                              <div class="timeline-icon"><i class="fas fa-edit"></i></div>
-                              <span class="year">15/05/2017 15:50</span>
-                              <div class="timeline-content">
-                                  <h5 class="title">Atualizado</h5>
-                                  <p class="description">
-                                      <span>Folha_de_Pagamento_V6.pdf</span><br>
-                                      Alterado por: </span>Robson Quedevez</span> 
-                                  </p>
-                              </div>
-                          </div>
-                          <div class="timeline">
-                              <div class="timeline-icon"><i class="fas fa-edit"></i></div>
-                              <span class="year">15/05/2017 15:50</span>
-                              <div class="timeline-content">
-                                  <h5 class="title">Atualizado</h5>
-                                  <p class="description">
-                                      <span>Folha_de_Pagamento_V6.pdf</span><br>
-                                      Alterado por: </span>Robson Quedevez</span> 
-                                  </p>
-                              </div>
-                          </div>
-                          <div class="timeline">
-                              <div class="timeline-icon"><i class="far fa-trash-alt"></i></div>
-                              <span class="year">15/05/2017 15:50</span>
-                              <div class="timeline-content">
-                                  <h5 class="title">Excluído</h5>
-                                  <p class="description">
-                                      <span>Folha_de_Pagamento_V5.pdf</span><br>
-                                      Alterado por: </span>Diego Broetto</span>
-                                  </p>
-                              </div>
-                          </div>
+                      <div class="main-timeline7" id="timelineBody">
+                          
                       </div>
                   </div>
               </div>

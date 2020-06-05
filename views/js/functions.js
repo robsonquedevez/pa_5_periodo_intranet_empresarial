@@ -473,6 +473,7 @@ $(document).ready(() => {
 	});
 
 	const frmFileInclude = $('#frm-include-file');
+	const frmFileUpdate = $('#frm-update-file');
 
 	function deleteFile(ev){
 		let id = ev.target.parentElement.parentElement.dataset.id;
@@ -510,6 +511,47 @@ $(document).ready(() => {
 
 	function updateFile(ev){
 
+		let id = ev.target.parentElement.parentElement.dataset.id;
+		let nome = ev.target.parentElement.parentElement.cells[0].textContent;
+		let departamento = ev.target.parentElement.parentElement.cells[2].textContent;
+		let categoria = ev.target.parentElement.parentElement.cells[3].textContent;
+
+		$('#idNomeFileUp').val(nome);
+		$('#idDepartamentoFileUp option:eq(0)').text(departamento);
+		$('#idCategoriaFileUp option:eq(0)').text(categoria);
+
+		
+
+		new Promise((resolve, reject) => {
+			$.ajax({
+				url: '/file/include/infUpdate/' + id,
+				method: 'post',
+				dataType: 'json',
+				success: function(response){				
+
+					if (response.message.tipo) {
+						$('#idPrivadoUp').attr('checked', false);
+						$('#idPublicoUp').attr('checked', true);
+					}else{
+						$('#idPublicoUp').attr('checked', false);
+						$('#idPrivadoUp').attr('checked', true);
+					}
+					$('#nameFileInputUp').text(response.message.nomeArquivo);
+
+					resolve();
+				},
+				error: function(response){
+					console.log(response);
+					reject();
+				}
+			});
+
+		}).then(() => {
+			$('#modalUpdateFile').modal('show');
+		}).catch(()=>{
+			$('#text-response').html('Erro ao fazer alteração, tente novamente');
+			$('#response').modal('show');
+		});
 	}
 
 	frmFileInclude.submit((ev) => {
@@ -580,6 +622,11 @@ $(document).ready(() => {
 		});
 	});
 
+	frmFileUpdate.submit((ev) => {
+		ev.preventDefault();
+		let data = new FormData();
+	});
+
 	$('.btnDelFile').click((ev) => {
 		deleteFile(ev);
 	});
@@ -642,15 +689,14 @@ $(document).ready(() => {
 			},
 			success: function(response){				
 
-				if (response.status) {							
+				if (response.status) {			
+
+					$('.timeline').remove();
 
 					$(response.message).each(function(){
 
-						let timeLine = ``;
-
 						if(this.tipo == 'Inserido'){
-							timeLine += `
-
+							timeLine = `
 								<div class="timeline">
 	                              <div class="timeline-icon"><i class="fas fa-plus-circle"></i></div>
 	                              <span class="year">${this.data}</span>
@@ -662,13 +708,10 @@ $(document).ready(() => {
 	                                  </p>
 	                              </div>
 		                         </div>
-
 							`;
-						}
-
-						if(this.tipo == 'Atualizado'){
-							timeLine += `
-
+							$('#timelineBody').append(timeLine);
+						}else{
+							timeLine = `
 								<div class="timeline">
 	                              <div class="timeline-icon"><i class="fas fa-edit"></i></div>
 	                              <span class="year">${this.data}</span>
@@ -680,30 +723,11 @@ $(document).ready(() => {
 	                                  </p>
 	                              </div>
 		                         </div>
-
 							`;
-						}else{
-							timeLine += `
-
-								<div class="timeline">
-	                              <div class="timeline-icon"><i class="far fa-trash-alt"></i></div>
-	                              <span class="year">${this.data}</span>
-	                              <div class="timeline-content">
-	                                  <h5 class="title">${this.tipo}</h5>
-	                                  <p class="description">
-	                                      <span>${this.arquivo}</span><br>
-	                                      Alterado por: </span>${this.usuario}</span> 
-	                                  </p>
-	                              </div>
-		                         </div>
-
-							`;
+							$('#timelineBody').append(timeLine);
 						}
-
-						$('#timelineBody').append(timeLine);
 						$('#historyModal').modal('show');
 					});
-
 
 				}else{
 					$('#text-response').html(response.message);
@@ -718,4 +742,8 @@ $(document).ready(() => {
 			}
 
 		});
+	});
+
+	$('.btnUpdateFile').click((ev) => {
+		updateFile(ev);
 	});

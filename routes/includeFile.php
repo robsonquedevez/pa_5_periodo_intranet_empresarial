@@ -7,6 +7,46 @@
 	use App\Model;
 	use App\User;
 
+	$app->post('/include/infUpdate/:id', function($id) use ($app){
+		sleep(1);
+		if (!isset($id) || empty($id)) {
+			return $app->response->write(json_encode([
+				'status' 	=> false,
+				'message'	=> 'Erro ao carregar, tente novamente'
+			]));
+		}
+
+		$sql = new Sql();
+		$connection = $sql->getConnection();
+		try {
+			$queryType = $connection->query("SELECT tipo FROM tb_documentos WHERE id = $id");
+			$tipo = $queryType->fetchAll()[0];
+
+			if ($tipo['tipo'] == 'Publico') {
+				$tipo = true;
+			}else{
+				$tipo = false;
+			}
+
+			$queryAnexo = $connection->query("SELECT nome FROM tb_anexo WHERE id_documento = $id");
+			$nome = $queryAnexo->fetchAll()[0];
+
+			return $app->response->write(json_encode([
+				'status'	=> true,
+				'message'	=> [
+					'tipo'			=> $tipo,
+					'nomeArquivo'	=> $nome['nome']
+				]
+			]));
+
+		} catch (Exception $e) {
+			return $app->response->write(json_encode([
+				'status'	=> false,
+				'message'	=> $e->getMessage()
+			]));
+		}
+	});
+
 	$app->post('/include/categoria/:id', function($id) use ($app){
 		sleep(1);
 		if (!isset($id) || empty($id)) {
@@ -33,7 +73,6 @@
 				'message'	=> $e->getMessage()
 			]));
 		}
-
 	});
 	
 	$app->delete('/include/delete/:id', function($id) use ($app){

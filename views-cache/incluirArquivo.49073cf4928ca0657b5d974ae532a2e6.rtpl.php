@@ -146,4 +146,58 @@
           </div>
         </div>
 
+         <div class="modal fade" id="modalUpdateFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <form id="frm-update-file">
+                
+                <div class="card-body">
+                  <input type="hidden" id="idUpdateFile">
+
+                  <div class="form-group">
+                    <label>Nome</label>
+                    <input type="text" name="name" class="form-control" id="idNomeFileUp">
+
+                    <label>Departamento</label>
+                    <select class="custom-select" name="departamento" id="idDepartamentoFileUp">
+                      <option value="-1">Selecione</option>
+                      <?php $counter1=-1;  if( isset($departamento) && ( is_array($departamento) || $departamento instanceof Traversable ) && sizeof($departamento) ) foreach( $departamento as $key1 => $value1 ){ $counter1++; ?>                                    
+                      <option value="<?php echo htmlspecialchars( $value1["id"], ENT_COMPAT, 'UTF-8', FALSE ); ?>"><?php echo htmlspecialchars( $value1["nome"], ENT_COMPAT, 'UTF-8', FALSE ); ?></option>
+                      <?php } ?>
+                    </select>
+
+                      <label>Categorias:</label>
+                      <select class="custom-select" name="categoria" id="idCategoriaFileUp">
+                        <option value="-1">Selecione</option>                                
+                      </select>
+                      <hr>
+                      <label class="mr-4">Tipo</label>
+                      <div class="custom-radio col-sm-6 d-inline mt-4 mr-2">
+                        <input type="radio" class="custom-control-input" id="idPublicoUp" name="tipo">
+                        <label class="custom-control-label" for="idPublico">Público</label>
+                      </div>
+                      <div class="custom-radio col-sm-6 d-inline mt-4">                
+                        <input type="radio" class="custom-control-input" id="idPrivadoUp" name="tipo" >
+                        <label class="custom-control-label" for="idPrivado">Privado</label>
+                      </div>
+                      <hr>
+                      <div class="col-md mb-2">
+                        <div class="custom-file">
+                          <input type="file" name="fileUpload" class="custom-file-input" accept=".doc, .docx, .pdf" id="idFile" required="">
+                          <label class="custom-file-label" for="idFile" id="nameFileInputUp">Escolher arquivo</label>
+                        </div>
+                      </div>
+
+                </div>             
+                <div class="card-footer">
+                  <button type="button" data-dismiss="modal" class="btn btn-danger">Cancelar</button>
+                  <button type="submit" class="btn btn-success" >Salvar</button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
       
