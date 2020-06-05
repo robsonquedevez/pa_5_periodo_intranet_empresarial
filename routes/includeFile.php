@@ -7,6 +7,107 @@
 	use App\Model;
 	use App\User;
 
+	$app->post('/include/update', function() use ($app){		
+
+		try {
+			$sql = new Sql();
+			$connection = $sql->getConnection();
+
+			if(!empty($_POST)){			
+
+				$id = $_POST['id'];
+
+				$queryOld = $connection->query("SELECT * FROM tb_documentos WHERE id = $id");
+				$old = $queryOld->fetchAll()[0];
+
+				$dept;
+				$cate;
+
+				if($_POST['departamento'] == '-1'){
+					$dept = $old['departamento'];
+				}else{
+					$dept = $_POST['departamento'];
+				}
+
+				if($_POST['categoria'] == '-1'){
+					$cate = $old['categoria'];
+				}else{
+					$cate = $_POST['categoria'];
+				}
+
+				$statement = $connection->prepare('UPDATE tb_documentos SET nome = :NOME, tipo = :TIPO, departamento = DEPT, categoria = :CAT WHERE id = :ID');
+				$statement->bindParam(':ID', $_POST['id']);
+				$statement->bindParam(':NOME', $_POST['nome']);
+				$statement->bindParam(':TIPO', $_POST['tipo']);
+				$statement->bindParam(':DEPT', $dept);
+				$statement->bindParam(':CAT', $cate);
+				$statement->execute();
+
+				if (!empty($_FILES)) {
+
+					$queryOld = $connection->query("SELECT caminho FROM tb_anexo WHERE id_documento = $id");
+					$old = $queryOld->fetchAll()[0];
+
+					if(!unlink($old['caminho'])){
+						return $app->response->write(json_encode([
+							'status' 	=> false,
+							'message'	=> 'Erro ao excluir arquivo'
+						]));
+					}
+
+					$path = __DIR__.'\..\views\files\\';			
+
+					$ext = explode('/', $_FILES['file']['type']);
+					$ext = $ext[1];
+
+					$name = $_FILES['file']['name'].$dt;
+
+					$nameFile = hash('md5', $name).'.'.$ext;
+
+					$httpPath = '/views/files/' . $nameFile;
+
+					$uploadFile = $path . basename($nameFile);
+
+					move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile);
+
+					$statement = $connection->prepare('UPDATE tb_anexo SET caminho = CAMI, nome = :NOME, tamanho = :TAM WHERE id_documento = :ID');
+					$statement->bindParam(':ID', $id);
+					$statement->bindParam(':CAMI', $httpPath);
+					$statement->bindParam(':NOME', $_FILES['file']['name']);
+					$statement->bindParam(':TAM', $_FILES['file']['size']);
+					$statement->execute();
+				}
+				
+				$queryFiles = $connection->query("SELECT doc.id, doc.nome, usu.nome AS usuario, dept.nome AS departamento, cat.nome AS categoria, anx.tamanho, doc.dtHrEnvio, anx.nome AS nomeArquivo, anx.caminho FROM tb_documentos AS doc INNER JOIN tb_usuarios AS usu ON doc.usuario = usu.id INNER JOIN tb_departamento AS dept ON doc.departamento = dept.id INNER JOIN tb_categorias AS cat ON doc.categoria = cat.id INNER JOIN tb_anexo AS anx ON doc.id = anx.id_documento WHERE doc.id = $id");
+
+				$file = $queryFiles->fetchAll()[0];
+
+				$dtFormatada = new DateTime($file['dtHrEnvio']);
+				$dtFormatada = $dtFormatada->format("d/m/Y H:i:s");				
+
+				return $app->response->write(json_encode([
+					'status'	=> true,
+					'message'	=> [
+								'id'			=> $file['id'],
+								'nome'			=> $file['nome'],
+								'usuario'		=> $file['usuario'],
+								'departamento'	=> $file['departamento'],
+								'categoria'		=> $file['categoria'],
+								'tamanho'		=> (round(($file['tamanho'] / 1024)) . 'KB'),
+								'data'			=> $dtFormatada,
+								'anexoNome'		=> $file['nomeArquivo'],
+								'caminho'		=> $file['caminho']
+						]
+				]));
+			}
+		} catch (Exception $e) {
+			return $app->response->write(json_encode([
+				'status' 	=> false,
+				'message'	=> $e->getMessage()
+			]));	
+		}
+	});
+
 	$app->post('/include/infUpdate/:id', function($id) use ($app){
 		sleep(1);
 		if (!isset($id) || empty($id)) {

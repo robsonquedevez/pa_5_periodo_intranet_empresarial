@@ -516,6 +516,7 @@ $(document).ready(() => {
 		let departamento = ev.target.parentElement.parentElement.cells[2].textContent;
 		let categoria = ev.target.parentElement.parentElement.cells[3].textContent;
 
+		$('#idUpdateFile').val(id);
 		$('#idNomeFileUp').val(nome);
 		$('#idDepartamentoFileUp option:eq(0)').text(departamento);
 		$('#idCategoriaFileUp option:eq(0)').text(categoria);
@@ -625,6 +626,47 @@ $(document).ready(() => {
 	frmFileUpdate.submit((ev) => {
 		ev.preventDefault();
 		let data = new FormData();
+
+		data.append("id", ev.target[0].value);
+		data.append("nome", ev.target[1].value);
+		data.append("departamento", ev.target[2].value);
+		data.append("categoria", ev.target[3].value);
+		let type;
+
+		if (ev.target[4].checked) {
+			type = 'Publico'
+		}else{
+			type = 'Privado'
+		}
+
+		data.append("tipo", type);
+		data.append("file", ev.target[6].files[0]);
+		
+		$.ajax({
+			url: '/file/include/update',
+			type: 'post',
+			data: data,
+			dataType: 'json',
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			beforeSend: function(response){
+				$('#loading').modal('show');
+			},
+			success: function(response){
+
+				console.log(response);
+
+				$('#modalUpdateFile').modal('hide');
+
+				$('#loading').modal('hide');
+			},
+			error: function(response){
+				$('#loading').modal('hide');
+				console.log(response);
+			}
+		});	
+
 	});
 
 	$('.btnDelFile').click((ev) => {

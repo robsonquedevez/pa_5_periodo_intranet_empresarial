@@ -149,7 +149,7 @@
          <div class="modal fade" id="modalUpdateFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
-              <form id="frm-update-file">
+              <form id="frm-update-file" enctype="multipart/form-data">
                 
                 <div class="card-body">
                   <input type="hidden" id="idUpdateFile">
@@ -183,7 +183,7 @@
                       <hr>
                       <div class="col-md mb-2">
                         <div class="custom-file">
-                          <input type="file" name="fileUpload" class="custom-file-input" accept=".doc, .docx, .pdf" id="idFile" required="">
+                          <input type="file" name="fileUpload" class="custom-file-input" accept=".doc, .docx, .pdf" id="idFile">
                           <label class="custom-file-label" for="idFile" id="nameFileInputUp">Escolher arquivo</label>
                         </div>
                       </div>
