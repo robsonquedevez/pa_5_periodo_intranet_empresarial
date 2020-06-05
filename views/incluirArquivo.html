@@ -1,0 +1,149 @@
+
+                <div class="container-fluid">
+
+
+                  <div class="card mb-4">
+                    <div class="card-header">
+                      Incluir Arquivo
+                    </div>
+                    <div class="card-body">
+                      
+                      <!-- Inicio Form Cadastro de Deparmento -->
+                      <form id="frm-include-file" enctype="multipart/form-data" method="post">
+
+                        <div class="form-row">
+
+                          <div class="col-md-4 mb-3">
+                            <div class="form-group">
+                              <label>Nome</label>
+                              <input type="text" name="nome" id="idNome" class="form-control" required="">
+                            </div>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <div class="form-group">
+                              <label>Departamento:</label>
+                              <select class="custom-select" name="departamento" id="idDepartamentoFile" required="">
+                                <option value="-1">Selecione</option>
+                                {loop="$departamento"}                                    
+                                <option value="{$value.id}">{$value.nome}</option>
+                                {/loop}
+                              </select>
+                            </div>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <div class="form-group">
+                              <label>Categorias:</label>
+                              <select class="custom-select" name="categoria" id="idCategoriaFile" required="" disabled="">
+                                <option value="-1">Selecione</option>                                
+                              </select>
+                            </div>
+                          </div>
+
+                        </div>
+
+                        <div class="form-row">
+
+                          <div class="col-md-1 col-sm-4">
+                            <label>Tipo: </label>
+                          </div>
+                                              
+                          <div class="custom-radio col-md-1 col-sm-4">
+                            <input type="radio" class="custom-control-input" id="idPublico" name="tipo" checked="">
+                            <label class="custom-control-label" for="idPublico">Público</label>
+                          </div>
+                          <div class="custom-radio col-md-1 col-sm-4">                
+                            <input type="radio" class="custom-control-input" id="idPrivado" name="tipo" >
+                            <label class="custom-control-label" for="idPrivado">Privado</label>
+                          </div>                          
+
+                          <div class="col-md-7 mb-2">
+                            <div class="custom-file">
+                              <input type="file" name="fileUpload" class="custom-file-input" accept=".doc, .docx, .pdf" id="idFile" required="">
+                              <label class="custom-file-label" for="idFile" id="nameFileInput">Escolher arquivo</label>
+                            </div>
+                          </div>
+  
+                          <div class="col-md-2 mb-2">
+                            <div class="input-group ">
+                              <button type="submit" class="btn btn-primary" id="idSalvarDpt">Incluir Arquivo</button>
+                            </div>
+                          </div>
+
+                        </div>
+
+                      </form> 
+                      <!-- Fim Form Cadastro de Deparmento -->
+      
+                      <!-- Inicio Tabela Departamento -->
+                      <div class="table-responsive my-5">
+                        <table class="table table-bordered" id="table-files" width="100%" cellspacing="0">
+                          <thead>
+                            <tr>
+                              <th>Nome do Arquivo:</th>
+                              <th>Usuário:</th>
+                              <th>Departamento:</th>
+                              <th>Categoria:</th>
+                              <th>Tamanho:</th>
+                              <th>Data da Inclusão:</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+
+                            {loop="$documento"}
+
+                              <tr data-id="{$value.id}">
+                                <td>{$value.nome}</td>
+                                <td>{$value.usuario}</td>
+                                <td>{$value.departamento}</td>
+                                <td>{$value.categoria}</td>
+                                <td>{function="formatByteToKb($value.tamanho)"}</td>
+                                <td>{function="formatDate($value.dtHrEnvio)"}</td>
+                                <td>
+                                  <button class="btn far fa-trash-alt center btnDelFile" title="Excluir"></button>
+                                  <button class="btn far fa-edit center btnUpdateFile" title="Editar"></button>
+                                  <a class="btn far fa-file-pdf center" href="http://www.intranet.com.br{$value.caminho}" title="{$value.nomeArquivo}" target="_blank"></a>
+                                </td>
+                              </tr>
+
+                            {/loop}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div> 
+              </div>
+      </div>
+
+
+       <div class="modal fade" id="response" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body"> 
+                <span id="text-response"></span>
+              </div>
+              <div class="modal-footer">
+                  <button data-dismiss="modal" class="btn btn-primary">Fechar</button>
+              </div>             
+            </div>
+          </div>
+        </div>
+
+         <div class="modal fade" id="modalConfirmDeleteFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="card-body">
+                Deseja realmente excluir?
+                <input type="hidden" id="idDeleteFile">
+              </div>             
+              <div class="card-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger">Cancelar</button>
+                <button type="button" class="btn btn-secundary" id='btnDelFileOk'>Excluir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      

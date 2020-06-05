@@ -1,0 +1,146 @@
+
+                
+                <div class="container-fluid">
+
+
+                  <div class="card mb-4">
+                    <div class="card-header">
+                      Arquivos Privados: Tecnologia da Informação
+                    </div>
+                    <div class="card-body">
+                      
+                      <!-- Inicio Tabela Departamento -->
+                      
+                      <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                          <thead>
+                            <tr>
+                              <th>Nome do Arquivo:</th>
+                              <th>Usuário:</th>
+                              <th>Departamento:</th>
+                              <th>Categoria:</th>
+                              <th>Data da Inclusão:</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+
+                            {loop="$documento"}
+
+                              <tr data-id="{$value.id}">
+                                <td>{$value.nome}</td>
+                                <td>{$value.usuario}</td>
+                                <td>{$value.departamento}</td>
+                                <td>{$value.categoria}</td>
+                                <td>{function="formatDate($value.dtHrEnvio)"}</td>
+                                <td>                                  
+                                  <button class="btn btn-link"><i class="fas fa-history" data-toggle="modal" data-target="#historyModal"></i></button>
+                                  <a class="btn far fa-file-pdf center" href="http://www.intranet.com.br{$value.caminho}" title="{$value.nomeArquivo}" target="_blank"></a>
+                                </td>
+                              </tr>
+
+                            {/loop}
+                            
+                          </tbody>
+                        </table>
+                      </div>
+      
+      
+                        
+                    </div>
+                  </div>
+ 
+              </div>
+              <!-- /.container-fluid -->
+
+    <!-- Delete Modal-->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Deseja excluir o arquivo?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Não</button>
+            <a class="btn btn-primary" href="#">Sim</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hisotory Modal-->
+    <div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Histórico do Documento</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <div class="container">
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="main-timeline7">
+                          <div class="timeline">
+                              <div class="timeline-icon"><i class="fas fa-plus-circle"></i></div>
+                              <span class="year">12/05/2018 18:30</span>
+                              <div class="timeline-content">
+                                  <h5 class="title">Inserido</h5>
+                                  <p class="description">
+                                      <span>Folha_de_Pagamento_V5.pdf</span><br>
+                                      Alterado por: </span>Diego Broetto</span>
+                                  </p>
+                              </div>
+                          </div>
+                          <div class="timeline">
+                              <div class="timeline-icon"><i class="fas fa-edit"></i></div>
+                              <span class="year">15/05/2017 15:50</span>
+                              <div class="timeline-content">
+                                  <h5 class="title">Atualizado</h5>
+                                  <p class="description">
+                                      <span>Folha_de_Pagamento_V6.pdf</span><br>
+                                      Alterado por: </span>Robson Quedevez</span> 
+                                  </p>
+                              </div>
+                          </div>
+                          <div class="timeline">
+                              <div class="timeline-icon"><i class="fas fa-edit"></i></div>
+                              <span class="year">15/05/2017 15:50</span>
+                              <div class="timeline-content">
+                                  <h5 class="title">Atualizado</h5>
+                                  <p class="description">
+                                      <span>Folha_de_Pagamento_V6.pdf</span><br>
+                                      Alterado por: </span>Robson Quedevez</span> 
+                                  </p>
+                              </div>
+                          </div>
+                          <div class="timeline">
+                              <div class="timeline-icon"><i class="far fa-trash-alt"></i></div>
+                              <span class="year">15/05/2017 15:50</span>
+                              <div class="timeline-content">
+                                  <h5 class="title">Excluído</h5>
+                                  <p class="description">
+                                      <span>Folha_de_Pagamento_V5.pdf</span><br>
+                                      Alterado por: </span>Diego Broetto</span>
+                                  </p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+      </div>
